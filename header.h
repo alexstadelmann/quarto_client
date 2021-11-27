@@ -9,18 +9,17 @@
 
 
 
-#define POSIXLY_CORRECT 1
 #define GAMEKINDNAME "Quarto"
 #define PORTNUMBER 1357
 #define HOSTNAME "sysprak.priv.lab.nm.ifi.lmu.de"
 #define ID_LEN 13
 
 //The following functions are defined in helperFunctions.c
-void printInstructions(); 
-bool isValidId(char *); 
-bool isValidPlayerNum(char *); 
-void idInit(char *, int); 
-void printId(char *, int);
+void print_instructions(); 
+bool is_valid_id(char *); 
+bool is_valid_player_number(char *); 
+void id_init(char *, int); 
+void print_id(char *, int);
 
 
 

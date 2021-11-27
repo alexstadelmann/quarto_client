@@ -2,27 +2,38 @@
 
 
 int main(int argc, char **argv) {
-  char *gameId = (char*) malloc(sizeof(char)*(ID_LEN + 1));
-  int playerNum = 1;
+
+  /* 
+  if(argc != 5) {
+    fprintf(stderr, "Incorrect number of arguments!\n");
+    return EXIT_FAILURE;
+  }
+  */
+  
+  char *game_id = (char*) malloc(sizeof(char)*(ID_LEN + 1));  
+  int player_number = 1;
   int ret;
+  
   srand(time(NULL));
 
-  idInit(gameId, ID_LEN + 1);
+  //initializes random game id string. Might turn out to be unnessesary if sysprak-client is allways called with parameters.
+  id_init(game_id, ID_LEN + 1);
 
+ 
   while ((ret = getopt(argc, argv, "g:p:")) != -1) {
     switch(ret) {
       case 'g':
 
-        if(isValidId(optarg)) {
-          strcpy(gameId, optarg);
+        if(is_valid_id(optarg)) {
+          strcpy(game_id, optarg);
           break;
         } else {
           fprintf(stderr, "The game ID entered is incorrect!\n");
           return EXIT_FAILURE;
         }
       case 'p':
-        if(isValidPlayerNum(optarg)){
-          playerNum = atoi(optarg);
+        if(is_valid_player_number(optarg)){
+          player_number = atoi(optarg);
           break;
         } else {
           fprintf(stderr, "The player number you entered is incorrect!");
@@ -30,12 +41,12 @@ int main(int argc, char **argv) {
         }
         
       default:
-        abort();
+        break;
 
     }
   }
 
-  printf("Game ID: %s\nPlayer Number: %d\n",gameId, playerNum);
+  printf("Game ID: %s\nPlayer Number: %d\n",game_id, player_number);
  
  return EXIT_SUCCESS;
 

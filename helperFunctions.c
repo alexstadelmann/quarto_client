@@ -1,6 +1,6 @@
 #include "header.h"
 
-bool isValidId(char *arg) {
+bool is_valid_id(char *arg) {
   int i = 0;
   int length = 0;
   while(arg[i] != '\0') {
@@ -12,7 +12,7 @@ bool isValidId(char *arg) {
   return true;
 }
 
-bool isValidPlayerNum(char *arg) {
+bool is_valid_player_number(char *arg) {
   if((arg[0]== '1' || arg[0]== '2') && arg[1]== '\0') {
     return true;
   } else {
@@ -20,7 +20,7 @@ bool isValidPlayerNum(char *arg) {
   }
 }
 
-void idInit(char *ptr, int size) {
+void id_init(char *ptr, int size) {
     const char charset[] = "abcdefghijklmnopqrstuvwxyz0123456789";
     int len = (int) sizeof charset - 1;
     if (size) {
@@ -33,7 +33,7 @@ void idInit(char *ptr, int size) {
     }
 }
 
-void printId(char *ptr, int length) {
+void print_id(char *ptr, int length) {
   for(int i = 0; i < length; i++){
     printf("%d", ptr[i]);
   }
