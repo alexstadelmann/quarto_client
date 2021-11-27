@@ -1,0 +1,6 @@
+*.o
+*.out
+*.exe
+*.json
+*.plist
+sysprak-client
