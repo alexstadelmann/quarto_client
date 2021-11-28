@@ -51,7 +51,8 @@ int main(int argc, char **argv) {
   }
 
   printf("Game ID: %s\nPlayer Number: %d\n",game_id, player_number);
- 
+  connectServer();
+  
  return EXIT_SUCCESS;
 
 }
