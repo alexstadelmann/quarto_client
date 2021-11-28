@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -std=c11
+CFLAGS = -Wall -Wextra -Werror -g
 SRCFILES = sysprak-client.c helperFunctions.c
 MAIN = sysprak-client
 

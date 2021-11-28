@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include <ctype.h>
-#include <ranlib.h>
 #include <time.h>
 #include <string.h>
 
