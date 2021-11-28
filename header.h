@@ -1,10 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <time.h>
-#include <string.h>
+#include <stdio.h>    //for printf and fprintf
+#include <stdlib.h>   //for rand und macros like EXIT_SUCCESS
+#include <unistd.h>   //for getopt
+#include <stdbool.h>  // for true and false
+#include <ctype.h>   //for isdigit and isalphanum
+#include <time.h>   //for srand(time(NULL))
+#include <string.h> //for strcpy
 
 
 

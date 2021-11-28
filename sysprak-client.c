@@ -3,7 +3,7 @@
 /*How-To-Use: Zum Ausführen kann man ./sysprak-client aufrufen mit zwei optionalen Parametern
 -g <13-stellige GAMEID> -p <Spielernummer(1 oder 2)>
 Wird keine Gameid mitgegeben, dann erstellt das Programm eine zufällige GameId
-und fallst keine Spielernummer übergeben wird, dann ist der Default Spieler 1.
+und falls keine Spielernummer übergeben wird, dann ist der Default Spieler 1.
 */
 int main(int argc, char **argv) {
 
