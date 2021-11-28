@@ -4,24 +4,23 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include <header.h>
+#include "header.h"
 
 
 int connectServer(){
-    unsigned long addr;
     struct hostenet *hostName;
     struct sockaddr_in server;
 
     
-    int socket = socket(AF_INET, SOCK_STREAM, 0); //ggf. hier anstelle AF_INET auch AF_INET6
-    if socket == -1{
+    int socket_fd = socket(AF_INET, SOCK_STREAM, 0); //ggf. hier anstelle AF_INET auch AF_INET6
+    if (socket_fd == -1){
         //Fehlerbehandlung
         //perror() oder strerror()
     }
 
     //herausbekommen der IP-Adresse
     hostName = *gethostbyname(HOSTNAME); //hier ggf.  Fehlerquelle da gethostbyname nur einen Zeiger zurück gibt 
-    if hostName == NULL {
+    if (hostName == NULL) {
         //Fehlerbehandlung error
     }                               
 
@@ -43,12 +42,14 @@ int connectServer(){
 
 
     //connect-Versuch
-    int connectSuccess =  connect(socket, (struct sockaddr*) server, sizeof(server));
-    if connectSuccess == -1 {
+    int connectSuccess =  connect(socket_fd, (struct sockaddr*) server, sizeof(server));
+    if (connectSuccess == -1) {
         //Fehlerbehandlung
         //errno, ähnlich wie oben
+        return -1;
     } else {
         printf("With Server connected!");
+        return 1;
     }
 }
 
