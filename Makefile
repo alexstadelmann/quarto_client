@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
-SRCFILES = sysprak-client.c helperFunctions.c
+SRCFILES = sysprak-client.c helperFunctions.c serverConnection.c
 MAIN = sysprak-client
 
 all: $(MAIN) 
