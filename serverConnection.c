@@ -47,6 +47,8 @@ int connectServer(){
     if connectSuccess == -1 {
         //Fehlerbehandlung
         //errno, ähnlich wie oben
+    } else {
+        printf("With Server connected!");
     }
 }
 
