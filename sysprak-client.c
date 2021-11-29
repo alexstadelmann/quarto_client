@@ -1,4 +1,5 @@
 #include "header.h"
+#include "serverConnectionHeader.h"
 
 /*How-To-Use: Zum Ausführen kann man ./sysprak-client aufrufen mit zwei optionalen Parametern
 -g <13-stellige GAMEID> -p <Spielernummer(1 oder 2)>
@@ -51,7 +52,10 @@ int main(int argc, char **argv) {
   }
 
   printf("Game ID: %s\nPlayer Number: %d\n",game_id, player_number);
- 
+  if (connectServer()== -1){
+      //Fehlerbehandlung
+  }
+  
  return EXIT_SUCCESS;
 
 }

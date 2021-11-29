@@ -4,49 +4,46 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include <header.h>
+#include "header.h"
+#include <arpa/inet.h>
 
 
 int connectServer(){
-    unsigned long addr;
-    struct hostenet *hostName;
+    struct hostent *hostName;
     struct sockaddr_in server;
 
     
-    int socket = socket(AF_INET, SOCK_STREAM, 0); //ggf. hier anstelle AF_INET auch AF_INET6
-    if socket == -1{
+    int socket_fd = socket(AF_INET, SOCK_STREAM, 0); //ggf. hier anstelle AF_INET auch AF_INET6
+    if (socket_fd == -1){
         //Fehlerbehandlung
         //perror() oder strerror()
-    }
+    } 
 
     //herausbekommen der IP-Adresse
-    hostName = *gethostbyname(HOSTNAME); //hier ggf.  Fehlerquelle da gethostbyname nur einen Zeiger zurück gibt 
-    if hostName == NULL {
+    hostName = gethostbyname(HOSTNAME); //hier ggf.  Fehlerquelle da gethostbyname nur einen Zeiger zurück gibt 
+    if (hostName == NULL) {
         //Fehlerbehandlung error
-    }                               
+    }                     
 
-
-    //check für mich, ob wirklich AF_INET oder AF_INET6 anschauen hostName.h_addrtype
-    /*
-    //hier fehlt noch einiges von der Website, letztes Fenster was mich interessiert
-    memset(&server, 0, sizeof(server)); 
-    addr = inet_addr(argv[1]);
-    */
-
+    
+    //memset(&server, 0, sizeof(server));
     memcpy((char *)&server.sin_addr, hostName->h_addr_list[0], hostName->h_length);
 
     //struct sockaddr_in befüllen/erstellen
     server.sin_family = AF_INET;
-    server.sin_port = htons(PORTNUMBER);    //Achtung, Format nochmals nachlesen
-    //server.sin_addr = ...;              //durch memcpy gamacht
-    //server.pad = ...;                   //k.A.; Affüllbytes für sockaddr. muss glaub nicht gemacht werden
-
+    server.sin_port = htons(PORTNUMBER);    
 
     //connect-Versuch
-    int connectSuccess =  connect(socket, (struct sockaddr*) server, sizeof(server));
-    if connectSuccess == -1 {
+    printf("IP-Adresse: %s\n", inet_ntoa(server.sin_addr));
+    int connectSuccess =  connect(socket_fd, (struct sockaddr*) &server, sizeof(server));
+    if (connectSuccess == -1) {
         //Fehlerbehandlung
         //errno, ähnlich wie oben
+        printf("Error: Connection failed!\n");
+        return -1;
+    } else {
+        printf("With Server connected!\n");
+        return 1;
     }
 }
 
