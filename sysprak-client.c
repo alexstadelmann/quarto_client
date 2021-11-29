@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 
   printf("Game ID: %s\nPlayer Number: %d\n",game_id, player_number);
   if (connectServer()== 1){
-      printf("Klappt Alles #main");
+      printf("Klappt Alles #main\n");
   }
   
  return EXIT_SUCCESS;
