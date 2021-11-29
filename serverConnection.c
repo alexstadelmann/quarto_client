@@ -8,7 +8,7 @@
 
 
 int connectServer(){
-    struct hostenet *hostName;
+    struct hostent *hostName;
     struct sockaddr_in server;
 
     
@@ -16,13 +16,19 @@ int connectServer(){
     if (socket_fd == -1){
         //Fehlerbehandlung
         //perror() oder strerror()
+        printf("Error: socket_fd\n");
+    } else {
+        printf("socket_fd success\n");
     }
 
     //herausbekommen der IP-Adresse
-    hostName = *gethostbyname(HOSTNAME); //hier ggf.  Fehlerquelle da gethostbyname nur einen Zeiger zurück gibt 
+    hostName = gethostbyname(HOSTNAME); //hier ggf.  Fehlerquelle da gethostbyname nur einen Zeiger zurück gibt 
     if (hostName == NULL) {
         //Fehlerbehandlung error
-    }                               
+        printf("Error: gethostbyname\n");
+    } else {
+        printf("gethostbyname success\n");
+    }                       
 
 
     //check für mich, ob wirklich AF_INET oder AF_INET6 anschauen hostName.h_addrtype
@@ -31,7 +37,8 @@ int connectServer(){
     memset(&server, 0, sizeof(server)); 
     addr = inet_addr(argv[1]);
     */
-
+    
+    //memset(&server, 0, sizeof(server));
     memcpy((char *)&server.sin_addr, hostName->h_addr_list[0], hostName->h_length);
 
     //struct sockaddr_in befüllen/erstellen
@@ -42,13 +49,14 @@ int connectServer(){
 
 
     //connect-Versuch
-    int connectSuccess =  connect(socket_fd, (struct sockaddr*) server, sizeof(server));
+    int connectSuccess =  connect(socket_fd, (struct sockaddr*) &server, sizeof(server));
     if (connectSuccess == -1) {
         //Fehlerbehandlung
         //errno, ähnlich wie oben
+        printf("Error: Connection failed!\n");
         return -1;
     } else {
-        printf("With Server connected!");
+        printf("With Server connected!\n");
         return 1;
     }
 }
