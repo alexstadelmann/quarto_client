@@ -9,8 +9,8 @@
 #include "header.h"
 
 
-extern char* gameid;
-extern int playerNumber;
+extern char* game_id;
+extern int player_number;
 int step;                       //Wächter, dass kein Schritt übersprungen wurde
 
 char *handle(char *request);
