@@ -42,7 +42,7 @@ void processInformation(char *buffer, int fileSock){
         end = !match(requests[i]+2,"QUIT");   
         if(requests[i][0]=='+'){            //positive Antwort
             if(strlen(requests[i])>2){      //auf leeren String überprüfen
-              char *response; //TODO: Funktion aufrufen, die je nach Fall reagiert 
+              char *response=handle(requests[i]); 
               sendResponse(response, fileSock);
 
             }else{
@@ -50,7 +50,8 @@ void processInformation(char *buffer, int fileSock){
             }
             
         }else if (requests[i][0]=='-'){     //negative Antwort
-            //TODO: Fehlerbehandlung
+            //TODO: Fehlerbehandlung, timeout ausgeben
+
         }
         i++;
     }while(requests[i]!=NULL && end);  

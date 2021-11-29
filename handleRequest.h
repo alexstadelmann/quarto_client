@@ -15,6 +15,4 @@ int stringToken(char *str, char *divider, char *token[]);
 
 
 
-
-
 #endif
