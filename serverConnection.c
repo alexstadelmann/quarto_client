@@ -1,11 +1,8 @@
 // https://openbook.rheinwerk-verlag.de/c_von_a_bis_z/025_c_netzwerkprogrammierung_004.htm
 
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
 #include "header.h"
-#include <arpa/inet.h>
+#include "serverConnectionHeader.h"
 
 
 int connectServer(){
@@ -16,13 +13,16 @@ int connectServer(){
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0); //ggf. hier anstelle AF_INET auch AF_INET6
     if (socket_fd == -1){
         //Fehlerbehandlung
-        //perror() oder strerror()
+         perror("Socket could not be created!\n");
+         return(EXIT_FAILURE);
     } 
 
     //herausbekommen der IP-Adresse
     hostName = gethostbyname(HOSTNAME); //hier ggf.  Fehlerquelle da gethostbyname nur einen Zeiger zurück gibt 
     if (hostName == NULL) {
         //Fehlerbehandlung error
+         perror("Hostname missing or not able to resolve!\n");
+         return(EXIT_FAILURE);
     }                     
 
     
@@ -39,12 +39,14 @@ int connectServer(){
     if (connectSuccess == -1) {
         //Fehlerbehandlung
         //errno, ähnlich wie oben
-        printf("Error: Connection failed!\n");
-        return -1;
-    } else {
+         perror("Not able to connect with Server!\n");
+         return(EXIT_FAILURE);
+    } else if(connectSuccess ==0){
         printf("With Server connected!\n");
+        //Hier muss wahrscheinlich noch performConnection() aufgerufen werden. Kann lokal probiert werden
         return 1;
     }
+    return connectSuccess;
 }
 
 
