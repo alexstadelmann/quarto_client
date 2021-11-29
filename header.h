@@ -12,6 +12,8 @@
 #define PORTNUMBER 1357
 #define HOSTNAME "sysprak.priv.lab.nm.ifi.lmu.de"
 #define ID_LEN 13
+#define BUFFERLENGTH 2048                           //Buffer beim einlesen, ggf anpassen
+#define VERSION 1.0
 
 //The following functions are defined in helperFunctions.c
 void print_instructions(); 
