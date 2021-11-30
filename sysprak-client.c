@@ -6,7 +6,7 @@
 Wird keine Gameid mitgegeben, dann erstellt das Programm eine zufällige GameId
 und falls keine Spielernummer übergeben wird, dann ist der Default Spieler 1.
 */
-int main(int argc, char **argv) {
+int main(int argc, char **argv){
 
   /* 
   if(argc != 5) {
@@ -15,8 +15,8 @@ int main(int argc, char **argv) {
   }
   */
   
-  char *game_id = (char*) malloc(sizeof(char)*(ID_LEN + 1));  
-  int player_number = 1;
+  game_id = (char*) malloc(sizeof(char)*(ID_LEN + 1));  
+  player_number = 1;
   int ret;
   
   srand(time(NULL));

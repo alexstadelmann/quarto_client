@@ -5,6 +5,7 @@
 #include "serverConnectionHeader.h"
 
 
+
 int connectServer(){
     struct hostent *hostName;
     struct sockaddr_in server;
@@ -44,6 +45,7 @@ int connectServer(){
     } else if(connectSuccess ==0){
         printf("With Server connected!\n");
         //Hier muss wahrscheinlich noch performConnection() aufgerufen werden. Kann lokal probiert werden
+        performConnection(socket_fd);
         return 1;
     }
     return connectSuccess;

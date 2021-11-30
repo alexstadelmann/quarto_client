@@ -1,6 +1,6 @@
 #include "performConnection.h"
 
-void performConnection(int fileSock){
+void performConnection(int fileSock) {
     end = 1; //erstmal auf eins setzen, ggf. ändern; Überprüft ob Endplayer geschickt wurde
     
     //hier Überwachung aller Aufgaben und ankommender Dinge
@@ -35,7 +35,7 @@ void performConnection(int fileSock){
 void processInformation(char *buffer, int fileSock){
     //Da Server auch mehrere Anfagen hintereinander schicken kann, speichern wir die Anfragen in einem Array zwischen
     char **requests = calloc(BUFFERLENGTH, sizeof(char*));                   //speicher reservieren
-    strtoken(buffer, "\n", requests);  
+    stringToken(buffer, "\n", requests);  
 
     int i=0;
     do{
@@ -76,6 +76,5 @@ void sendResponse(char *response, int fileSock){
     }
     if (response != NULL){
         free(response);
-    }
-        
+    }    
 }

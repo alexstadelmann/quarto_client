@@ -1,6 +1,6 @@
 #include "handleRequest.h"
 
-int match(char * string, char * pattern)
+int match(const char *string, char *pattern)
 {
     int result;
     regex_t reg;
@@ -33,4 +33,5 @@ int stringToken(char *str, char *divider, char *token[]){
     i++;                                                                        
     token[i] = strtok(NULL, divider);                                         
   }
-  return i;                                           
+  return i; 
+}                                          

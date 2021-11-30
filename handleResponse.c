@@ -6,8 +6,6 @@ char *handle(char *request){
     char *response;
     char *print;
 
-    int anz //kann entfernt werden, wenn der Struct existiert
-
     if((response = malloc(BUFFERLENGTH*sizeof(char)))==NULL){
         //TODO: Fehlerbehandlung
     }
@@ -18,13 +16,15 @@ char *handle(char *request){
 
     if (step==1 && match(request, "MNM Gameserver .+accepting connections"))
     {
+        char sver[10];
+        sprintf(sver, "%f", VERSION);
         strcpy(response,"VERSION ");
-        strcat(response, VERSION);
+        strcat(response, sver);
         //SChön formatierte Ausgabe
         strcpy(print, "The MNM server with version ");
         char *version = substring(request, 16,strlen(request)-22);      //Aus dem vom Server gesendeten String die Versionsnummer herausfiltern
-        strncat(print, version);
-        strncat(print, " accepted the connection. ");
+        strcat(print, version);
+        strcat(print, " accepted the connection. ");
 
         if (version != NULL) {
             free(version);
@@ -32,7 +32,7 @@ char *handle(char *request){
         step++;  
     } else if (step==2 && match(request, "Client version accepted - please send Game-ID to join"))
     {
-        strncpy(response, "ID ");
+        strcpy(response, "ID ");
         strcat(response, game_id);
         //Ausgabe
         strcpy(print, "Client version accepted - please send Game-ID to join.");
@@ -45,10 +45,10 @@ char *handle(char *request){
         }
         response = NULL;                                                //NULL-Pointer, da der Client hier nicht reagieren muss
         //Ausgabe
-        strncpy(print, "Es wird das Spiel ");
+        strcpy(print, "Es wird das Spiel ");
         char *gamekind = substring(request, 9, strlen(request));
-        strncat(print, gamekind);
-        strncat(print, " gespielt.");
+        strcat(print, gamekind);
+        strcat(print, " gespielt.");
 
         if (gamekind != NULL)
         {
@@ -58,14 +58,16 @@ char *handle(char *request){
         step++;
         
     }else if (step == 4 && match(request, ".+")){
+        char sint[12];
+        sprintf(sint, "%d", player_number);
         strcpy(response, "PLAYER ");
-        strcat(response, player_number); 
+        strcat(response, sint); 
 
         //Ausgabe
         strcpy(print, "Diese Partie trägt den Namen : \'");
         char *gamename = substring(request, 2, strlen(request));
-        strncat(print, gamename);
-        strncat(print, "\'.");
+        strcat(print, gamename);
+        strcat(print, "\'.");
 
         if (gamename != NULL)
         {
@@ -82,10 +84,10 @@ char *handle(char *request){
         //Ausgabe (hier auch die jeweiligen Werte im richtigen Format in der Struct ablegen (in Milestone 2))
         strcpy(print, "You are the Player with the number ");
         char *playnum = substring(request, 5,7);                    //evtl. verzählt --> Testen und Zahlen ggf. anpassen
-        strncat(print, playnum);
-        strncat(print, " and your name is ");
+        strcat(print, playnum);
+        strcat(print, " and your name is ");
         char *playname = substring(request, 8, strlen(request));
-        strncat(print, playname);
+        strcat(print, playname);
 
         if (playnum != NULL)
         {
@@ -103,14 +105,14 @@ char *handle(char *request){
         response=NULL;
 
         char *totalPlayer = substring(request, 6, strlen(request));
-        anz = atoi(totalPlayer);
+        int anz = atoi(totalPlayer);
         if(anz > 1){
-            strncpy(print, "Es nehmen ");
+            strcpy(print, "Es nehmen ");
         }else{
-            strncpy(print, "Es nimmt ");
+            strcpy(print, "Es nimmt ");
         }
-        strncat(print, totalPlayer);
-        strncat(print, " am Spiel teil.");
+        strcat(print, totalPlayer);
+        strcat(print, " am Spiel teil.");
         if (totalPlayer != NULL)
         {
             free(totalPlayer);
@@ -122,7 +124,7 @@ char *handle(char *request){
         }
         response=NULL;
 
-        strncpy(print, "The game starts. Have fun!");
+        strcpy(print, "The game starts. Have fun!");
 
     }else if (step >= 7 && match(request, ".+ .+ .+")){
         if(response!=NULL){
@@ -162,10 +164,10 @@ char *handle(char *request){
             free(response);
         }
         response = NULL;                                                            
-        if(out!=NULL){
-            free(out);
+        if(print!=NULL){
+            free(print);
         }
-         out = NULL;
+         print = NULL;
     }
 
     if(response != NULL){
@@ -178,13 +180,4 @@ char *handle(char *request){
 
     return  response;
     
-    
-    
-    
-
-
-    
-
-    
-
 }

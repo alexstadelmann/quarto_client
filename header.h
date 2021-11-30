@@ -15,6 +15,9 @@
 #define BUFFERLENGTH 2048                           //Buffer beim einlesen, ggf anpassen
 #define VERSION 1.0
 
+char *game_id;
+int player_number;
+
 //The following functions are defined in helperFunctions.c
 void print_instructions(); 
 bool is_valid_id(char *); 
