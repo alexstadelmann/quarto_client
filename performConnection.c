@@ -1,6 +1,7 @@
 #include "performConnection.h"
 
 void performConnection(int fileSock) {
+    printf("Wir sind in performConnection angekommen\n");
     end = 1; //erstmal auf eins setzen, ggf. ändern; Überprüft ob Endplayer geschickt wurde
     
     //hier Überwachung aller Aufgaben und ankommender Dinge
@@ -14,15 +15,18 @@ void performConnection(int fileSock) {
         tv.tv_usec = 0;    
         //regelmäßig überprüfen, ob neue Daten ankommen
         retval = select(sizeof(readfd)*2, &readfd, NULL, NULL, &tv);
-        if(retval == 1){
+        //printf("Der Wert von retval ist %d\n", retval);
+        if(retval == -1){
             //TODO: Fehlerbehandlung
         }else if(retval){
-            socketData = FD_ISSET(fileSock, &readfd);                               //Socket auslesen
+            socketData = FD_ISSET(fileSock, &readfd);                   //Socket auslesen
+            printf("Socket Data: %d\n", socketData);                              
             if(socketData!=0){                                                       
                 char *buffer = calloc(BUFFERLENGTH,sizeof(char));                   //Speicher reservieren und mit 0 belegen                   
                 if((read(fileSock, buffer, BUFFERLENGTH)) < 0){                            
                    //TODO: Fehlerbehandlung                                    
                 }
+                printf("Wir springen zu processInformation\n");
                 processInformation(buffer, fileSock);
             }
         }
@@ -33,6 +37,7 @@ void performConnection(int fileSock) {
 }
 
 void processInformation(char *buffer, int fileSock){
+    printf("Angekommen in processInformation \n");
     //Da Server auch mehrere Anfagen hintereinander schicken kann, speichern wir die Anfragen in einem Array zwischen
     char **requests = calloc(BUFFERLENGTH, sizeof(char*));                   //speicher reservieren
     stringToken(buffer, "\n", requests);  
