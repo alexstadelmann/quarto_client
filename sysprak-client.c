@@ -16,7 +16,8 @@ int main(int argc, char **argv){
   */
   
   game_id = (char*) malloc(sizeof(char)*(ID_LEN + 1));  
-  player_number = 1;
+  player_number=NULL;
+  int playercheck = 0; // schaut ob spieler als parameter mitgegeben wurde, bei 0 = kein Spieler und bei 1 = Spieler
   int ret;
   
   srand(time(NULL));
@@ -37,8 +38,9 @@ int main(int argc, char **argv){
           return EXIT_FAILURE;
         }
       case 'p':
-        if(is_valid_player_number(optarg)){
-          player_number = atoi(optarg);
+        if(strcmp(optarg,"")!=0){
+          player_number=optarg;
+          playercheck = 1;
           break;
         } else {
           fprintf(stderr, "The player number you entered is incorrect!");
@@ -51,7 +53,12 @@ int main(int argc, char **argv){
     }
   }
 
-  printf("Game ID: %s\nPlayer Number: %d\n",game_id, player_number);
+  if(playercheck ==0){
+    player_number="";
+    printf("No player set\n");
+  }
+
+  printf("Game ID: %s\nPlayer Number: %s\n",game_id, player_number);
   if (connectServer()== -1){
       //Fehlerbehandlung
   }
