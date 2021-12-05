@@ -1,41 +1,57 @@
 #include "performConnection.h"
+#include "handleRequest.h"
 
 void performConnection(int fileSock) {
     printf("Wir sind in performConnection angekommen\n");
+    char *buffer = malloc(BUFFERLENGTH*sizeof(char));
+    char **requests = malloc(BUFFERLENGTH*sizeof(char*));
     end = 1; //erstmal auf eins setzen, ggf. ändern; Überprüft ob Endplayer geschickt wurde
     
     //hier Überwachung aller Aufgaben und ankommender Dinge
     do{
-         //Beobachtung des Sockets mit select(); Sinvoll, da später auch die Pipe it überwacht werden kann
-        FD_ZERO(&readfd);                                                          //Set bereinigen
-        FD_SET(fileSock, &readfd);                                                     //Socket (Gameserver) hinzufügen
-        
-        //Intervall festlegen
-        tv.tv_sec = 1;                                                              
-        tv.tv_usec = 0;    
-        //regelmäßig überprüfen, ob neue Daten ankommen
-        retval = select(sizeof(readfd)*2, &readfd, NULL, NULL, &tv);
-        //printf("Der Wert von retval ist %d\n", retval);
-        if(retval == -1){
-            //TODO: Fehlerbehandlung
-        }else if(retval){
-            socketData = FD_ISSET(fileSock, &readfd);                   //Socket auslesen
-            printf("Socket Data: %d\n", socketData);                              
-            if(socketData!=0){                                                       
-                char *buffer = calloc(BUFFERLENGTH,sizeof(char));                   //Speicher reservieren und mit 0 belegen                   
-                if((read(fileSock, buffer, BUFFERLENGTH)) < 0){                            
-                   //TODO: Fehlerbehandlung                                    
-                }
-                printf("Wir springen zu processInformation\n");
-                processInformation(buffer, fileSock);
+         memset(buffer,0, BUFFERLENGTH); 
+         recv(fileSock, buffer, BUFFERLENGTH-1, 0);  
+         stringToken(buffer, "\n",requests);  
+         int c = 0;                                                             //counter
+
+        do{
+       end = !match(requests[c]+2,"ENDPLAYERS");                                //zum Prüfen ob Ende der Prologphase erreicht
+        if(buffer[0]=='+'){                                                     //Server gibt positive Antwort zurück
+          if(strlen(requests[c])>2){                                            
+            printf("S: %s\n",(requests[c]+2));                                  //Serveranfrage
+            char *response = handle(requests[c]+2);                             //Hilfsmethode handle für Serveranfrage
+            if (response!=NULL){                                                
+              if(strcmp(response, "Unknown request\n")){                        //Vergleicht Fall ob Antwort-String == unbekannte Anfrage
+                send(fileSock,response,strlen(response),0);                        
+              }
+                printf("C: %s",response);                                       //Antwort des Clients auf Anfrage Server
             }
+            if(response!=NULL){                                                 
+              free(response);                                                   //Speicher von response leeren
+            }
+          }
+        }else if(buffer[0]=='-'){                                               //Server gibt negative Antwort zurück
+          printf("S: Error! %s\nDisconnecting server...\n",buffer+2);           // Fehlerausgabe (Timeout etc.)
+          exit(EXIT_FAILURE);                                                   
         }
-
-
+        c++;
+      }while(requests[c]!=NULL && end); 
     }while(end);            //wird mind. einmal durchlaufen, auch wenn Bedingugn nicht erfülllt ist
+
+    if(buffer!=NULL){
+        free(buffer);
+    }
+
+    if(requests!=NULL){
+        free(requests);
+    }
     
 }
 
+
+
+//Beide unteren Methoden werden derzeit nicht benutzt. Sind noch vom alten Ansatz der nicht ganz geklappt hat. Könnte aber später hilfreich sein, falls wir performConnection
+// lieber in mehrere verschiedene Funktionen lagern wollen.
 void processInformation(char *buffer, int fileSock){
     printf("Angekommen in processInformation \n");
     //Da Server auch mehrere Anfagen hintereinander schicken kann, speichern wir die Anfragen in einem Array zwischen
@@ -77,7 +93,7 @@ void processInformation(char *buffer, int fileSock){
 void sendResponse(char *response, int fileSock){
     if (response != NULL){
         send(fileSock,response,strlen(response),0);
-        printf("Client: %s\n",response);                        //Sollen wir ausgeben, was der Client sendet? Könnte gut zum debuggen sein
+        printf("C: %s\n",response);                        //Sollen wir ausgeben, was der Client sendet? Könnte gut zum debuggen sein
     }
     if (response != NULL){
         free(response);
