@@ -53,7 +53,7 @@ int main(int argc, char **argv){
     printf("No player set\n");
   }
 
-  printf("Game ID: %s\nPlayer Number: %s\n",game_id, player_number);
+  
   if (connectServer()== -1){
       //Fehlerbehandlung
   }

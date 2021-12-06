@@ -3,19 +3,20 @@
 
 void performConnection(int fileSock) {
     printf("Wir sind in performConnection angekommen\n");
-    char *buffer = malloc(BUFFERLENGTH*sizeof(char));
-    char **requests = malloc(BUFFERLENGTH*sizeof(char*));
+    char *buffer = (char*) malloc(BUFFERLENGTH*sizeof(char));
+    char **requests = (char**) malloc(REQUESTSLENGTH*sizeof(char*));
     end = 1; //erstmal auf eins setzen, ggf. ändern; Überprüft ob Endplayer geschickt wurde
     
     //hier Überwachung aller Aufgaben und ankommender Dinge
     do{
-         memset(buffer,0, BUFFERLENGTH); 
-         recv(fileSock, buffer, BUFFERLENGTH-1, 0);  
+         
+         recv_all(fileSock, buffer, BUFFERLENGTH-1);
+         buffer[BUFFERLENGTH] = '\0';  
          stringToken(buffer, "\n",requests);  
          int c = 0;                                                             //counter
 
         do{
-       end = !match(requests[c]+2,"ENDPLAYERS");                                //zum Prüfen ob Ende der Prologphase erreicht
+        end = !match(requests[c]+2,"ENDPLAYERS");                                //zum Prüfen ob Ende der Prologphase erreicht
         if(buffer[0]=='+'){                                                     //Server gibt positive Antwort zurück
           if(strlen(requests[c])>2){                                            
             printf("S: %s\n",(requests[c]+2));                                  //Serveranfrage

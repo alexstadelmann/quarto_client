@@ -12,7 +12,8 @@
 #define PORTNUMBER 1357
 #define HOSTNAME "sysprak.priv.lab.nm.ifi.lmu.de"
 #define ID_LEN 13
-#define BUFFERLENGTH 128                          //Buffer beim einlesen, ggf anpassen
+#define BUFFERLENGTH 128
+#define REQUESTSLENGTH 5                          //Buffer beim einlesen, ggf anpassen
 #define VERSION "2.3"
 
 //Spielernummer wird von optarg jetzt als char eingelesen statt int
@@ -23,8 +24,8 @@ char *player_number;
 void print_instructions(); 
 bool is_valid_id(char *); 
 bool is_valid_player_number(char *); 
-void id_init(char *, int); 
 void print_id(char *, int);
+int recv_all(int sockfd, char *buf, size_t len);
 
 
 

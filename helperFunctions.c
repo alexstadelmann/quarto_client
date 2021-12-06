@@ -20,10 +20,19 @@ bool is_valid_player_number(char *arg) {
   }
 }
 
-
-
 void print_id(char *ptr, int length) {
   for(int i = 0; i < length; i++){
     printf("%d", ptr[i]);
   }
+}
+
+int recv_all(int sockfd, char *buffer, size_t len) {
+  
+  int packet_length = 0;
+  int temp;
+  do{
+    temp = read(sockfd, buffer+packet_length, len);
+    packet_length += temp;
+  } while(buffer[packet_length - 1] != '\n');
+  return packet_length;
 }
