@@ -4,14 +4,15 @@
 void performConnection(int fileSock) {
     printf("Wir sind in performConnection angekommen\n");
     char *buffer = (char*) malloc(BUFFERLENGTH*sizeof(char));
-    char **requests = (char**) malloc(REQUESTSLENGTH*sizeof(char*));
+    char **requests = (char**)  calloc(REQUESTSLENGTH,sizeof(char*));
     end = 1; //erstmal auf eins setzen, ggf. ändern; Überprüft ob Endplayer geschickt wurde
     
     //hier Überwachung aller Aufgaben und ankommender Dinge
-    do{
-         
-         recv_all(fileSock, buffer, BUFFERLENGTH-1);
-         buffer[BUFFERLENGTH] = '\0';  
+    do{ 
+
+         int packet_length; 
+         packet_length = recv_all(fileSock, buffer, BUFFERLENGTH-1);
+         buffer[packet_length] = '\0';  
          stringToken(buffer, "\n",requests);  
          int c = 0;                                                             //counter
 

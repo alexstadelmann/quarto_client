@@ -1,4 +1,5 @@
 #include "handleRequest.h"
+#include "header.h"
 
 int match(const char *string, char *pattern)
 {
@@ -26,12 +27,15 @@ char *substring(char *string, unsigned int from, unsigned int to){
   }
 }
 
-int stringToken(char *str, char *divider, char *token[]){
-  int i = 0;                                                                    
-  token[0] = strtok(str, divider);                                            
-  while (token[i]){                                                             
-    i++;                                                                        
-    token[i] = strtok(NULL, divider);                                         
+int stringToken(char *str, char *divider, char **requests){
+  int i = 0;
+  char *entry = (char*) calloc(BUFFERLENGTH,sizeof(char));
+  strcpy(entry, str);
+  requests[0] = strtok(entry, divider);                               
+  while (requests[i]){                              
+    i++;                                                   
+    requests[i] = strtok(NULL, divider);                               
   }
-  return i; 
+  requests[i + 1] = NULL;
+  return i;
 }                                          
