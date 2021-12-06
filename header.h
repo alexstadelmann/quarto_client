@@ -16,10 +16,12 @@
 #define REQUESTSLENGTH 5 // maximum number of consecutive lines send by the server and stored in one buffer. 
 #define OUR_VERSION "2.3"
 #define VERSIONLENGTH 16
+#define NAME_LEN 64
 
 //important parameters of the game:
 char *game_id;
 char *player_number;
+char *player_name;
 char *cip_version;
 
 //The following functions are defined in helperFunctions.c

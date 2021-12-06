@@ -16,7 +16,9 @@ int main(int argc, char **argv){
   //allocate memory for global parameters (declared in header.h):
   game_id = (char*) malloc((ID_LEN + 1)*sizeof(char));
   player_number = (char*) malloc(sizeof(char));
+  player_name = (char*) malloc(NAME_LEN*sizeof(char));
   cip_version = (char*) malloc(sizeof(char));
+  
 
   
   
