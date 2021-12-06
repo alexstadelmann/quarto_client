@@ -57,11 +57,11 @@ char *handle(char *request){
 
           char game[64];
           sscanf(request, "PLAYING %s", game);
-          if (!strcmp(game, GAMEKINDNAME)) {
+          if (!strcmp(game, "Quarto")) {
             if(response != NULL){
             free(response);
-          }
-          response = NULL;  
+            }
+            response = NULL;  
           }
         } else {
           perror("Expected other message from server");
@@ -92,6 +92,12 @@ char *handle(char *request){
           perror("Expected other message from server");
           exit(EXIT_FAILURE);
         }
+        if (response != NULL)
+        {
+            free(response);
+        }
+        response=NULL;
+
         step++;
         break;
 
@@ -101,6 +107,12 @@ char *handle(char *request){
           perror("Expected other message from server");
           exit(EXIT_FAILURE);
         }
+        if (response != NULL)
+        {
+            free(response);
+        }
+        response=NULL;
+
 
         step++;
         break;
@@ -109,6 +121,12 @@ char *handle(char *request){
         if(!match(request, ".+ .+ .+") & !match(request, "ENDPLAYERS")) {
           perror("Expected something else");
         } 
+        if (response != NULL)
+        {
+            free(response);
+        }
+        response=NULL;
+
         step++;
         break; 
 
