@@ -20,18 +20,7 @@ bool is_valid_player_number(char *arg) {
   }
 }
 
-void id_init(char *ptr, int size) {
-    const char charset[] = "abcdefghijklmnopqrstuvwxyz0123456789";
-    int len = (int) sizeof charset - 1;
-    if (size) {
-      --size;
-      for (int i = 0; i < size; i++) {
-        int key = rand() % (int) len;
-        ptr[i] = charset[key];
-      }
-      ptr[size] = '\0';
-    }
-}
+
 
 void print_id(char *ptr, int length) {
   for(int i = 0; i < length; i++){

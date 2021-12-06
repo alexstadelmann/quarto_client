@@ -19,11 +19,6 @@ int main(int argc, char **argv){
   player_number=NULL;
   int playercheck = 0; // schaut ob spieler als parameter mitgegeben wurde, bei 0 = kein Spieler und bei 1 = Spieler
   int ret;
-  
-  srand(time(NULL));
-
-  //initializes random game id string. Might turn out to be unnessesary if sysprak-client is allways called with parameters.
-  id_init(game_id, ID_LEN + 1);
 
  
   while ((ret = getopt(argc, argv, "g:p:")) != -1) {
