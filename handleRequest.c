@@ -38,4 +38,17 @@ int stringToken(char *str, char *divider, char **requests){
   }
   requests[i + 1] = NULL;
   return i;
-}                                          
+}
+
+void extract_regex(const char *string, char *pattern, char *dest)
+{
+    regex_t reg;
+    regmatch_t results[1];
+
+    if (regcomp(&reg, pattern, REG_EXTENDED) != 0)
+        
+    regexec(&reg, string, (size_t) 1, results, 0);    
+    printf("TEST%s", (char*) &results[0]); 
+    strcpy(dest, (char*) &results[0]);
+
+}        

@@ -8,14 +8,18 @@ und falls keine Spielernummer übergeben wird, dann ist der Default Spieler 1.
 */
 int main(int argc, char **argv){
 
-  /* 
-  if(argc != 5) {
+  //-p <player_number> is optional, to there are 3 or 5 arguments.
+  if(argc != 3 && argc != 5) {
     fprintf(stderr, "Incorrect number of arguments!\n");
     return EXIT_FAILURE;
   }
-  */
+  //allocate memory for global parameters (declared in header.h):
+  game_id = (char*) malloc((ID_LEN + 1)*sizeof(char));
+  player_number = (char*) malloc(sizeof(char));
+  cip_version = (char*) malloc(sizeof(char));
+
   
-  game_id = (char*) malloc(sizeof(char)*(ID_LEN + 1));  
+  
   player_number=NULL;
   int playercheck = 0; // schaut ob spieler als parameter mitgegeben wurde, bei 0 = kein Spieler und bei 1 = Spieler
   int ret;

@@ -1,27 +1,49 @@
 #include "handleResponse.h"
+#include "header.h"
 
 int step=1;
 //vieles auskommentierte noch vom alten Ansatz zur formatierten Ausgabe, kann helfen
 // bisher nur die "normalen" Kommandozeilennachrichten die vom Server empfangen wurden welche noch schön formatiert ausgegeben werden müssen
 char *handle(char *request){
     char *response;
-    //char *print;
 
-    if((response = malloc(BUFFERLENGTH*sizeof(char)))==NULL){
-        //TODO: Fehlerbehandlung
+
+    if((response = (char*) malloc(BUFFERLENGTH*sizeof(char)))==NULL){
+        perror("Error allocating memory");
     }
     
-    /*
-    if((print = malloc(BUFFERLENGTH*sizeof(char)))== NULL){
-        //TODO: Fehlerbehandlung
-    }*/
+    // switch(step) {
+    //   case 1:
+    //     //check server message
+    //     if(match(request, "MNM Gameserver .+accepting connections")) {
 
+    //       //extract first digit of game cip_version
+    //       sscanf(request, "MNM Gameserver v%c accepting connections", cip_version);
+
+
+    //       if(*cip_version == '2') {
+    //         strcpy(response,"VERSION ");
+    //         strcat(response, OUR_VERSION);
+    //       } else {
+    //         perror("Wrong version number");
+    //         return NULL;
+    //       } 
+    //     } else {
+    //       return NULL;
+    //     }
+          
+    //     }
+    // }
     if (step==1 && match(request, "MNM Gameserver .+accepting connections"))
-    {
-        //char sver[10];
-        //sprintf(sver, "%f", VERSION);
-        strcpy(response,"VERSION ");
-        strcat(response, VERSION);
+    {   
+        sscanf(request, "MNM Gameserver v%c accepting connections", cip_version);
+        if(*cip_version == '2') {
+          strcpy(response,"VERSION ");
+          strcat(response, OUR_VERSION);
+        } else {
+          perror("Wrong version number");
+        } 
+        
         /*Schön formatierte Ausgabe
         strcpy(print, "The MNM server with version ");
         char *version = substring(request, 16,strlen(request)-22);      //Aus dem vom Server gesendeten String die Versionsnummer herausfiltern
