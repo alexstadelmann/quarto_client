@@ -63,7 +63,7 @@ int main(int argc, char **argv){
   }
 
   
-  if (connectServer()== -1){
+  if (connectServer() == -1){
       //Fehlerbehandlung
   }
   

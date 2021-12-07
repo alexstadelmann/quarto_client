@@ -24,6 +24,8 @@ char *player_number;
 char *player_name;
 char *cip_version;
 
+
+
 //The following functions are defined in helperFunctions.c
 void print_instructions(); 
 bool is_valid_id(char *); 

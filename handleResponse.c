@@ -1,7 +1,7 @@
 #include "handleResponse.h"
 #include "header.h"
 
-int step=1;
+int step = 1;
 
 char *handle(char *request){
     char *response;
@@ -112,7 +112,7 @@ char *handle(char *request){
         break;
       //seventh message from server
       case 7:
-        if(!match(request, ".+ .+ .+") & !match(request, "ENDPLAYERS")) {
+        if(!match(request, ".+ .+ .+") || !match(request, "ENDPLAYERS")) {
           perror("Expected something else");
         } 
         if (response != NULL)

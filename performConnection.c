@@ -1,5 +1,6 @@
 #include "performConnection.h"
 #include "handleRequest.h"
+#include "header.h"
 
 void performConnection(int fileSock) {
     //printf("Wir sind in performConnection angekommen\n");
@@ -20,7 +21,7 @@ void performConnection(int fileSock) {
         end = !match(requests[c]+2,"ENDPLAYERS");                                //zum Prüfen ob Ende der Prologphase erreicht (match gibt bei erfolgreichem match 1 zurück.)
         if(buffer[0]=='+'){                                                     //Server gibt positive Antwort zurück
           if(strlen(requests[c])>2){                                            
-            printf("S: %s\n",(requests[c]+2));                                  //Serveranfrage
+            printf("S: %s\n",(requests[c]+2));   
             char *response = handle(requests[c]+2);                             //Hilfsmethode handle für Serveranfrage
             if (response!=NULL){                                                
               if(strcmp(response, "Unknown request\n")){                        //Vergleicht Fall ob Antwort-String == unbekannte Anfrage (und strcmp gibt bei Gleichheit 0 zurück)
@@ -37,16 +38,16 @@ void performConnection(int fileSock) {
           exit(EXIT_FAILURE);                                                   
         }
         c++;
-      }while(requests[c]!=NULL && end); 
+      }while(requests[c]!=NULL && end);
     }while(end);            //wird mind. einmal durchlaufen, auch wenn Bedingugn nicht erfülllt ist
 
     if(buffer!=NULL){
         free(buffer);
     }
 
-    if(requests!=NULL){
-        free(requests);
-    }
+    // if(requests!=NULL){
+    //     free(requests);
+    // }
     
 }
 
