@@ -1,6 +1,7 @@
 #include "header.h"
 
-bool is_valid_id(char *arg) {
+bool is_valid_id(char *arg) 
+{
   int i = 0;
   int length = 0;
   while(arg[i] != '\0') {
@@ -12,7 +13,8 @@ bool is_valid_id(char *arg) {
   return true;
 }
 
-bool is_valid_player_number(char *arg) {
+bool is_valid_player_number(char *arg) 
+{
   if((arg[0]== '1' || arg[0]== '2') && arg[1]== '\0') {
     return true;
   } else {
@@ -20,13 +22,15 @@ bool is_valid_player_number(char *arg) {
   }
 }
 
-void print_id(char *ptr, int length) {
+void print_id(char *ptr, int length)
+{
   for(int i = 0; i < length; i++){
     printf("%d", ptr[i]);
   }
 }
 
-int recv_all(int sockfd, char *buffer, size_t len) {
+int recv_all(int sockfd, char *buffer, size_t len)
+{
   
   int packet_length = 0;
   int temp;
@@ -35,4 +39,12 @@ int recv_all(int sockfd, char *buffer, size_t len) {
     packet_length += temp;
   } while(buffer[packet_length - 1] != '\n');
   return packet_length;
+}
+
+void free_pointer(char ** ptr, int len)
+{
+  int i;
+  for(i = 0; i < len; i++) {
+    free(ptr[i]);
+  }
 }

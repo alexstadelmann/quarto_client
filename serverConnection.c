@@ -6,7 +6,8 @@
 
 
 
-int connectServer(){
+int connectServer()
+{
     struct hostent *hostName;
     struct sockaddr_in server;
 
@@ -21,7 +22,6 @@ int connectServer(){
     //herausbekommen der IP-Adresse
     hostName = gethostbyname(HOSTNAME); //hier ggf.  Fehlerquelle da gethostbyname nur einen Zeiger zurück gibt 
     if (hostName == NULL) {
-        //Fehlerbehandlung error
          perror("Hostname missing or not able to resolve!\n");
          return(EXIT_FAILURE);
     }                     
@@ -35,20 +35,13 @@ int connectServer(){
     server.sin_port = htons(PORTNUMBER);    
 
     //connect-Versuch
-    //printf("IP-Adresse: %s\n", inet_ntoa(server.sin_addr));
     int connectSuccess =  connect(socket_fd, (struct sockaddr*) &server, sizeof(server));
-    if (connectSuccess == -1) {
-        //Fehlerbehandlung
-        //errno, ähnlich wie oben
+    if (connectSuccess != 0) {
          perror("Not able to connect with Server!\n");
-         return(EXIT_FAILURE);
-    } else if(connectSuccess ==0){
-        printf("With Server connected!\n");
-        //Hier muss wahrscheinlich noch performConnection() aufgerufen werden. Kann lokal probiert werden
-        performConnection(socket_fd);
-        return 1;
+         return(-1);
+    } else {
+        return socket_fd;
     }
-    return connectSuccess;
 }
 
 

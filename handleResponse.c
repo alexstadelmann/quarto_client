@@ -1,11 +1,9 @@
 #include "handleResponse.h"
-#include "header.h"
 
 int step = 1;
 
 char *handle(char *request){
     char *response;
-    
 
 
     if((response = (char*) malloc(BUFFERLENGTH*sizeof(char))) == NULL){
@@ -21,34 +19,33 @@ char *handle(char *request){
         if(match(request, "MNM Gameserver .+accepting connections")) {
 
           //extract first digit of the server game version
-          sscanf(request, "MNM Gameserver v%c accepting connections", cip_version);
-
-          if(*cip_version == '2') {
+          sscanf(request, "MNM Gameserver v%s accepting connections", cip_version);
+          
+          if(cip_version[0] == '2') {
             strcpy(response,"VERSION ");
             strcat(response, OUR_VERSION);
-            strcat(response, "\n");
+            
             step++;
-            return response;
+            
           } else {
-            perror("Wrong version number");
-            exit(EXIT_FAILURE);
+            strcpy(response, "Error");
           } 
         } else {
-          return NULL;
+          strcpy(response, "Error");
         }
-      break;  
+        break;  
       case 2:
         if(match(request, "Client version accepted - please send Game-ID to join")) {
           strcpy(response, "ID ");
           strcat(response, game_id);
-          strcat(response, "\n");
+          
           step++;
-          return response;
+          
       
-        } else 
-          return NULL;
-
-      break;
+        } else {
+          strcpy(response, "Error");
+        }
+        break;
       case 3:
         if(match(request, "PLAYING .+")) {
 
@@ -56,82 +53,71 @@ char *handle(char *request){
           sscanf(request, "PLAYING %s", game);
           if (strcmp(game, "Quarto")) {
             
-            if(response != NULL){
+            strcpy(response, "Error");
+            
+          } else {
             free(response);
-            }
-            perror("Server playing different game than quarto");
-            exit(EXIT_FAILURE);
+            response = NULL;
+            step++;
           }
-          response = NULL;
-          step++;
+          
+          
         } 
 
-      break;  
+        break;  
       case 4:
         if(match(request, ".+")) {
           strcpy(response, "PLAYER ");
           strcat(response, player_number); 
-          strcat(response, "\n");
           step++;
-          return response;
+          
         } 
-      break;
+        break;
       case 5:
         if(match(request, "YOU .+ .+")) {
-          //sscanf(request, "YOU %s Player %s", player_number, player_name);
-         // printf("%s, %s", player_number, player_name);
-          
-          
+
+          sscanf(request, "YOU %s Player %s", player_number, player_name);
+          free(response);
+          response = NULL;
+          step++;
+
         } else {
-          perror("Expected other message from server");
-          exit(EXIT_FAILURE);
+          strcpy(response, "Error");
         }
-        if (response != NULL)
-        {
-            free(response);
-        }
-        response=NULL;
-
-        step++;
         break;
 
-      //sixth message from server
+      
       case 6:
-        if(!match(request, "TOTAL .+")) {
-          perror("Expected other message from server");
-          exit(EXIT_FAILURE);
+        if(match(request, "TOTAL .+")) {
+          free(response);
+          response = NULL;
+          step++;
+        } else {
+          strcpy(response, "Error");
         }
-        if (response != NULL)
-        {
-            free(response);
-        }
-        response=NULL;
-
-
-        step++;
+        
         break;
-      //seventh message from server
       case 7:
-        if(!match(request, ".+ .+ .+") || !match(request, "ENDPLAYERS")) {
-          perror("Expected something else");
-        } 
-        if (response != NULL)
-        {
-            free(response);
+        if(match(request, ".+ .+ .+")) { 
+          free(response);
+          response = NULL;
+          
+        } else if (match(request, "ENDPLAYERS")) {
+          free(response);
+          response = NULL;
+          step++;
+        } else {
+          strcpy(response, "Error");
         }
-        response=NULL;
-
-        step++;
-        break; 
-
+        break;
       default:
-        if (response != NULL)
-        {
-            free(response);
-        }
-        response=NULL;
-         
+        free(response);
+        response = NULL;
+        break;
+    }
 
+    if(response != NULL) {
+      strcat(response, "\n");
     }
     
     return  response;

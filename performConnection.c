@@ -1,104 +1,80 @@
 #include "performConnection.h"
 #include "handleRequest.h"
-#include "header.h"
 
-void performConnection(int fileSock) {
-    //printf("Wir sind in performConnection angekommen\n");
+void performConnection(int fileSock) 
+{
+  
     char *buffer = (char*) malloc(BUFFERLENGTH*sizeof(char));
-    char **requests = (char**)  calloc(REQUESTSLENGTH,sizeof(char*));
-    end = 1; //erstmal auf eins setzen, ggf. ändern; Überprüft ob Endplayer geschickt wurde
+    char **requests = (char**)  malloc(REQUESTSLENGTH*sizeof(char*));
     
     //hier Überwachung aller Aufgaben und ankommender Dinge
     do{ 
+      
+      int line_length; 
+      line_length = recv_all(fileSock, buffer, BUFFERLENGTH-1);
+      buffer[line_length] = '\0'; 
+      int number_of_lines; 
+      number_of_lines = stringToken(buffer, "\n",requests);  
+      int c = 0;                                                             //counter
 
-         int line_length; 
-         line_length = recv_all(fileSock, buffer, BUFFERLENGTH-1);
-         buffer[line_length] = '\0';  
-         stringToken(buffer, "\n",requests);  
-         int c = 0;                                                             //counter
+      do{
+        //zum Prüfen ob Ende der Prologphase erreicht (match gibt bei erfolgreichem match 1 zurück.)
+        end = !match(requests[c]+2,"ENDPLAYERS");     
 
-        do{
-        end = !match(requests[c]+2,"ENDPLAYERS");                                //zum Prüfen ob Ende der Prologphase erreicht (match gibt bei erfolgreichem match 1 zurück.)
-        if(buffer[0]=='+'){                                                     //Server gibt positive Antwort zurück
-          if(strlen(requests[c])>2){                                            
-            printf("S: %s\n",(requests[c]+2));   
-            char *response = handle(requests[c]+2);                             //Hilfsmethode handle für Serveranfrage
-            if (response!=NULL){                                                
-              if(strcmp(response, "Unknown request\n")){                        //Vergleicht Fall ob Antwort-String == unbekannte Anfrage (und strcmp gibt bei Gleichheit 0 zurück)
-                send(fileSock,response,strlen(response),0);                        
-              }
-                printf("C: %s",response);                                       //Antwort des Clients auf Anfrage Server
-            }
-            if(response!=NULL){                                                 
-              free(response);                                                   //Speicher von response leeren
-            }
-          }
-        }else if(buffer[0]=='-'){                                               //Server gibt negative Antwort zurück
-          printf("S: Error! %s\nDisconnecting server...\n",buffer+2);           // Fehlerausgabe (Timeout etc.)
-          exit(EXIT_FAILURE);                                                   
-        }
-        c++;
-      }while(requests[c]!=NULL && end);
-    }while(end);            //wird mind. einmal durchlaufen, auch wenn Bedingugn nicht erfülllt ist
+        //Server schickt positive Nachricht                       
+        if(buffer[0]=='+'){   
 
-    if(buffer!=NULL){
-        free(buffer);
-    }
+          //Prüfen, dass Nachricht nicht bloß aus + besteht                                         
+          if(strlen(requests[c])>2){ 
 
-    // if(requests!=NULL){
-    //     free(requests);
-    // }
-    
-}
+            //Servernachricht ausgeben
+            printf("S: %s\n",(requests[c]+2));
 
-
-
-//Beide unteren Methoden werden derzeit nicht benutzt. Sind noch vom alten Ansatz der nicht ganz geklappt hat. Könnte aber später hilfreich sein, falls wir performConnection
-// lieber in mehrere verschiedene Funktionen lagern wollen.
-void processInformation(char *buffer, int fileSock){
-    printf("Angekommen in processInformation \n");
-    //Da Server auch mehrere Anfagen hintereinander schicken kann, speichern wir die Anfragen in einem Array zwischen
-    char **requests = calloc(BUFFERLENGTH, sizeof(char*));                   //speicher reservieren
-    stringToken(buffer, "\n", requests);  
-
-    int i=0;
-    do{
-        end = !match(requests[i]+2,"QUIT");   
-        if(requests[i][0]=='+'){            //positive Antwort
-            if(strlen(requests[i])>2){      //auf leeren String überprüfen
-              char *response=handle(requests[i]); 
-              sendResponse(response, fileSock);
-
-            }else{
-                //TODO: Fehlerbehandlung?
-            }
+            //Antwort generieren  
+            char *response = handle(requests[c]+2);
             
-        }else if (requests[i][0]=='-'){     //negative Antwort
-            //TODO: Fehlerbehandlung, timeout ausgeben
+            //Ist die Antwort leer, dann springen wir zur nächsten Servernachricht
+            if(response == NULL) {
+              c++;
+              continue;
+            }
+            //Antwort an Server schicken
+            send(fileSock,response,strlen(response),0);                        
+            
+            //Gesendete Antwort ausgeben
+            printf("C: %s",response);
+            
+            //den Speicher von response freigeben  
+                                                     
+            free(response);                                                   
+          }
+        //Negative Nachricht vom Server erhalten  
+        }else if(buffer[0]=='-'){
 
-        }
-        i++;
-    }while(requests[i]!=NULL && end);  
+          //Fehlermeldung ausgeben
+          printf("S: Error! %s\nDisconnecting server...\n",buffer+2);
 
-    //Speicher freigeben, falls noch nicht geschehen
+          //Speicher freigeben
+          free(buffer);
+          free_pointer(requests, number_of_lines);
+          free(requests);
+          return;                                                   
+      }
+      //Zähler inkrementieren
+      c++;
+      //solange es neue Lines gibt und wir "ENDPLAYERS" nicht erreicht haben bleiben wir in der Schleife
+      } while(requests[c]!=NULL && end);
+      
+     
+    //springen heraus sobald wir "ENDPLAYERS" erreichen
+    }while(end);            
 
-    if(buffer!=NULL){                                                           
-        free(buffer);                                                               
-    }
-    if(requests!=NULL){                                                           
-        free(requests);                                                            
-    }
+    //Speicher freigeben  
+    free(buffer);
+    free(requests);
+    
+    
+    
 
-   
-
-} 
-
-void sendResponse(char *response, int fileSock){
-    if (response != NULL){
-        send(fileSock,response,strlen(response),0);
-        printf("C: %s\n",response);                        //Sollen wir ausgeben, was der Client sendet? Könnte gut zum debuggen sein
-    }
-    if (response != NULL){
-        free(response);
-    }    
+    
 }
