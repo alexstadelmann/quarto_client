@@ -5,15 +5,16 @@ int step=1;
 
 char *handle(char *request){
     char *response;
+    
 
 
-    if((response = (char*) malloc(BUFFERLENGTH*sizeof(char)))==NULL){
+    if((response = (char*) malloc(BUFFERLENGTH*sizeof(char))) == NULL){
         perror("Error allocating memory");
     }
     
     switch(step) {
 
-      //first message from server
+      //each case expects a different message from the server.
       case 1:
 
         //check if message is correct
@@ -25,68 +26,61 @@ char *handle(char *request){
           if(*cip_version == '2') {
             strcpy(response,"VERSION ");
             strcat(response, OUR_VERSION);
+            strcat(response, "\n");
+            step++;
+            return response;
           } else {
             perror("Wrong version number");
             exit(EXIT_FAILURE);
           } 
         } else {
-          perror("Expected other message from server");
-          exit(EXIT_FAILURE);
+          return NULL;
         }
-
-        step++;
-        break;
-
-      //second message from server  
+      break;  
       case 2:
         if(match(request, "Client version accepted - please send Game-ID to join")) {
           strcpy(response, "ID ");
           strcat(response, game_id);
+          strcat(response, "\n");
+          step++;
+          return response;
       
-        } else {
-          perror("Expected other messagge from server");
-          exit(EXIT_FAILURE);
-        }
+        } else 
+          return NULL;
 
-        step++;
-        break;
-
-      //third message from server
+      break;
       case 3:
         if(match(request, "PLAYING .+")) {
 
           char game[64];
           sscanf(request, "PLAYING %s", game);
-          if (!strcmp(game, "Quarto")) {
+          if (strcmp(game, "Quarto")) {
+            
             if(response != NULL){
             free(response);
             }
-            response = NULL;  
+            perror("Server playing different game than quarto");
+            exit(EXIT_FAILURE);
           }
-        } else {
-          perror("Expected other message from server");
-          exit(EXIT_FAILURE);
-        }
+          response = NULL;
+          step++;
+        } 
 
-        step++;
-        break;
-      //fourth message from server  
+      break;  
       case 4:
         if(match(request, ".+")) {
           strcpy(response, "PLAYER ");
           strcat(response, player_number); 
-          
-        } else{
-          perror("Expected other message from server");
-          exit(EXIT_FAILURE);
-        }
-
-        step++;
-        break;
-      //fifth message from server
+          strcat(response, "\n");
+          step++;
+          return response;
+        } 
+      break;
       case 5:
         if(match(request, "YOU .+ .+")) {
-          sscanf(request, "YOU %s %s", player_number, player_name);
+          //sscanf(request, "YOU %s Player %s", player_number, player_name);
+         // printf("%s, %s", player_number, player_name);
+          
           
         } else {
           perror("Expected other message from server");
@@ -131,20 +125,15 @@ char *handle(char *request){
         break; 
 
       default:
-        printf("mal schauen was hier passiert :)\n");
+        if (response != NULL)
+        {
+            free(response);
+        }
+        response=NULL;
          
 
     }
-
-    if(response != NULL){
-        strcat(response, "\n");
-    } /*hier noch vllt kommentar
-    if(print != NULL){
-        printf("S: %s\n", print);
-        free(print);
-    } */
     
-
     return  response;
     
 }

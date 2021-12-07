@@ -35,7 +35,7 @@ int connectServer(){
     server.sin_port = htons(PORTNUMBER);    
 
     //connect-Versuch
-    printf("IP-Adresse: %s\n", inet_ntoa(server.sin_addr));
+    //printf("IP-Adresse: %s\n", inet_ntoa(server.sin_addr));
     int connectSuccess =  connect(socket_fd, (struct sockaddr*) &server, sizeof(server));
     if (connectSuccess == -1) {
         //Fehlerbehandlung

@@ -2,7 +2,7 @@
 #include "handleRequest.h"
 
 void performConnection(int fileSock) {
-    printf("Wir sind in performConnection angekommen\n");
+    //printf("Wir sind in performConnection angekommen\n");
     char *buffer = (char*) malloc(BUFFERLENGTH*sizeof(char));
     char **requests = (char**)  calloc(REQUESTSLENGTH,sizeof(char*));
     end = 1; //erstmal auf eins setzen, ggf. ändern; Überprüft ob Endplayer geschickt wurde
@@ -10,20 +10,20 @@ void performConnection(int fileSock) {
     //hier Überwachung aller Aufgaben und ankommender Dinge
     do{ 
 
-         int packet_length; 
-         packet_length = recv_all(fileSock, buffer, BUFFERLENGTH-1);
-         buffer[packet_length] = '\0';  
+         int line_length; 
+         line_length = recv_all(fileSock, buffer, BUFFERLENGTH-1);
+         buffer[line_length] = '\0';  
          stringToken(buffer, "\n",requests);  
          int c = 0;                                                             //counter
 
         do{
-        end = !match(requests[c]+2,"ENDPLAYERS");                                //zum Prüfen ob Ende der Prologphase erreicht
+        end = !match(requests[c]+2,"ENDPLAYERS");                                //zum Prüfen ob Ende der Prologphase erreicht (match gibt bei erfolgreichem match 1 zurück.)
         if(buffer[0]=='+'){                                                     //Server gibt positive Antwort zurück
           if(strlen(requests[c])>2){                                            
             printf("S: %s\n",(requests[c]+2));                                  //Serveranfrage
             char *response = handle(requests[c]+2);                             //Hilfsmethode handle für Serveranfrage
             if (response!=NULL){                                                
-              if(strcmp(response, "Unknown request\n")){                        //Vergleicht Fall ob Antwort-String == unbekannte Anfrage
+              if(strcmp(response, "Unknown request\n")){                        //Vergleicht Fall ob Antwort-String == unbekannte Anfrage (und strcmp gibt bei Gleichheit 0 zurück)
                 send(fileSock,response,strlen(response),0);                        
               }
                 printf("C: %s",response);                                       //Antwort des Clients auf Anfrage Server
