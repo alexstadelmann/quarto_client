@@ -15,8 +15,8 @@
 #define PORTNUMBER 1357
 #define HOSTNAME "sysprak.priv.lab.nm.ifi.lmu.de"
 #define ID_LEN 13
-#define BUFFERLENGTH 128
-#define REQUESTSLENGTH 5 // maximum number of consecutive lines send by the server and stored in one buffer. 
+#define BUFFERLENGTH 512
+#define REQUESTSLENGTH 64 // maximum number of consecutive lines send by the server and stored in one buffer. 
 #define OUR_VERSION "2.3"
 #define VERSION_LEN 16
 #define NAME_LEN 64

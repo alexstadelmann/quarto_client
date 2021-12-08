@@ -29,13 +29,12 @@ char *substring(char *string, unsigned int from, unsigned int to){
 
 int stringToken(char *str, char *divider, char **requests){
   int i = 0;
-  char *entry = (char*) calloc(BUFFERLENGTH,sizeof(char));
+  char *entry = (char*) malloc(BUFFERLENGTH*sizeof(char));
   strcpy(entry, str);
   requests[0] = strtok(entry, divider);                               
   while (requests[i]){                              
     i++;                                                   
     requests[i] = strtok(NULL, divider);                               
   }
-  printf("lines: %d\n", i);
   return i;
 }

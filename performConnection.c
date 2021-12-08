@@ -10,15 +10,19 @@ void performConnection(int fileSock)
     //hier Überwachung aller Aufgaben und ankommender Dinge
     do{ 
       
+      //in recv_all() wird recv() so oft aufgerufen, bis wir ein \n als letztes Zeichen haben
       int line_length; 
       line_length = recv_all(fileSock, buffer, BUFFERLENGTH-1);
       buffer[line_length] = '\0'; 
-      int number_of_lines; 
-      number_of_lines = stringToken(buffer, "\n",requests);  
-      int c = 0;                                                             //counter
+
+      //in einem Buffer können sich meherere Linien befinden, die strenne wir mit stringToken()
+      stringToken(buffer, "\n",requests);  
+
+      //counter
+      int c = 0;                                                             
 
       do{
-        //zum Prüfen ob Ende der Prologphase erreicht (match gibt bei erfolgreichem match 1 zurück.)
+        //zum Prüfen ob Ende der Prologphase erreicht (match() gibt bei erfolgreichem match 1 zurück.)
         end = !match(requests[c]+2,"ENDPLAYERS");     
 
         //Server schickt positive Nachricht                       
@@ -64,7 +68,7 @@ void performConnection(int fileSock)
       c++;
       //solange es neue Lines gibt und wir "ENDPLAYERS" nicht erreicht haben bleiben wir in der Schleife
       } while(requests[c]!=NULL && end);
-      
+     
      free(requests[0]);
     //springen heraus sobald wir "ENDPLAYERS" erreichen
     }while(end);            
