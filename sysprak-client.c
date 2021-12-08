@@ -39,7 +39,21 @@ int main(int argc, char **argv)
 
       case 'p':
         if(is_valid_player_number(optarg)){
-          strcpy(player_number,optarg);
+                   
+          switch (atoi(optarg))
+          {
+          case 1:
+            strcpy(player_number, "0");
+            break;
+          case 2:
+            strcpy(player_number, "1");
+            break;  
+          
+          default:
+            break;
+          }
+            
+          //strcpy(player_number,optarg);
           player_check = 1;
           break;
         } else {
