@@ -28,7 +28,6 @@ bool is_valid_id(char *);
 bool is_valid_player_number(char *); 
 void print_id(char *, int);
 int recv_all(int, char *, size_t); 
-void free_pointer(char **, int);
 
 //declare important variables
   char game_id[ID_LEN + 1];

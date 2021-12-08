@@ -56,7 +56,7 @@ void performConnection(int fileSock)
 
           //Speicher freigeben
           free(buffer);
-          free_pointer(requests, number_of_lines);
+          free(requests[0]);
           free(requests);
           return;                                                   
       }
@@ -65,7 +65,7 @@ void performConnection(int fileSock)
       //solange es neue Lines gibt und wir "ENDPLAYERS" nicht erreicht haben bleiben wir in der Schleife
       } while(requests[c]!=NULL && end);
       
-     
+     free(requests[0]);
     //springen heraus sobald wir "ENDPLAYERS" erreichen
     }while(end);            
 

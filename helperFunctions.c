@@ -40,11 +40,3 @@ int recv_all(int sockfd, char *buffer, size_t len)
   } while(buffer[packet_length - 1] != '\n');
   return packet_length;
 }
-
-void free_pointer(char ** ptr, int len)
-{
-  int i;
-  for(i = 0; i < len; i++) {
-    free(ptr[i]);
-  }
-}
