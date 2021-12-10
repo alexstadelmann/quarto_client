@@ -34,6 +34,7 @@ int recv_all(int, char *, size_t);
   char player_number[2];
   char player_name[NAME_LEN + 1];
   char cip_version[VERSION_LEN + 1];
+ 
 
 
 #endif

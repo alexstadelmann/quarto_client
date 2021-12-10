@@ -32,7 +32,7 @@ void performConnection(int fileSock)
           if(strlen(requests[c])>2){ 
 
             //Servernachricht ausgeben
-            printf("S: %s\n",(requests[c]+2));
+            //printf("S: %s\n",(requests[c]+2));
 
             //Antwort generieren  
             char *response = handle(requests[c]+2);

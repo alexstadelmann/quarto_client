@@ -4,10 +4,14 @@ int step = 1;
 
 char *handle(char *request){
     char *response;
+    char *print;
 
 
     if((response = (char*) malloc(BUFFERLENGTH*sizeof(char))) == NULL){
-        perror("Error allocating memory");
+        perror("Error allocating memory\n");
+    }
+    if((print = malloc(BUFFERLENGTH*sizeof(char)))==NULL){
+      perror("Error allocating memory\n");
     }
     
     switch(step) {
@@ -24,6 +28,16 @@ char *handle(char *request){
           if(cip_version[0] == '2') {
             strcpy(response,"VERSION ");
             strcat(response, OUR_VERSION);
+
+            strcpy(print, "The MNM Gameserver with version ");
+            char *version = substring(request, 16,strlen(request)-22);      //Aus dem vom Server gesendeten String die Versionsnummer herausfiltern
+            strcat(print, version);
+            strcat(print, " accepted the connection. "); 
+
+            if (version != NULL) {
+              free(version);
+            }
+
             
             step++;
             
@@ -38,6 +52,8 @@ char *handle(char *request){
         if(match(request, "Client version accepted - please send Game-ID to join")) {
           strcpy(response, "ID ");
           strcat(response, game_id);
+
+          strcpy(print, "Client version accepted - please send Game-ID to join.");
           
           step++;
           
@@ -58,19 +74,38 @@ char *handle(char *request){
           } else {
             free(response);
             response = NULL;
+
+            strcpy(print, "Es wird das Spiel ");
+            char *gamekind = substring(request, 8, strlen(request));
+            strcat(print, gamekind);
+            strcat(print, " gespielt.");
+
+            if (gamekind != NULL)
+            {
+              free(gamekind);
+            }
+
+
             step++;
           }
           
           
         } 
 
-        break;  
+        break; 
+
       case 4:
         if(match(request, ".+")) {
           strcpy(response, "PLAYER ");
           strcat(response, player_number); 
+
+          strcpy(print, "Diese Partie trägt den Namen : \'");
+          //char *gamename = substring(request, 0, strlen(request));
+          strcat(print, request);
+          strcat(print, "\'.");
+
           step++;
-          
+      
         } 
         break;
       case 5:
@@ -79,6 +114,40 @@ char *handle(char *request){
           sscanf(request, "YOU %s Player %s", player_number, player_name);
           free(response);
           response = NULL;
+
+          char *playnum = substring(request, 4, 5);
+          char *playname = substring(request, 6, strlen(request)); 
+
+          
+          int playNum1 = atoi(playnum)+1;
+          char *pointer=malloc(sizeof(char));
+          sprintf(pointer, "%d", playNum1);
+         
+
+
+
+          
+              
+
+          strcpy(print, "Du (");
+          strcat(print, playname );
+          strcat(print, ") bist Spieler Nummer ");
+          strcat(print, pointer);
+          strcat(print, "!");
+
+          if (playname != NULL)
+          {
+            free(playname);
+          }
+          if (playnum != NULL)
+          {
+            free(playnum);
+          }
+          
+
+       
+
+
           step++;
 
         } else {
@@ -91,6 +160,22 @@ char *handle(char *request){
         if(match(request, "TOTAL .+")) {
           free(response);
           response = NULL;
+
+          char *totalPlayer = substring(request, 6, strlen(request));
+          int anz = atoi(totalPlayer);
+          if(anz > 1){
+            strcpy(print, "Es nehmen ");
+          }else{
+            strcpy(print, "Es nimmt ");
+          }
+          strcat(print, totalPlayer);
+          strcat(print, " Spieler am Spiel teil.");
+          if (totalPlayer != NULL)
+          {
+            free(totalPlayer);
+          }
+
+
           step++;
         } else {
           strcpy(response, "Error");
@@ -101,10 +186,45 @@ char *handle(char *request){
         if(match(request, ".+ .+ .+")) { 
           free(response);
           response = NULL;
+
+          char *playNum = substring(request, 0, 1); 
+          char *playName = substring(request, 2, strlen(request)-2);
+          char *status = substring(request, strlen(request)-1,strlen(request) );
+
+          int playNum1=atoi(playNum)+1;
+          char playNumC=playNum1+'0';
+          char *point=&playNumC;
+
+
+
+          strcpy(print, "Spieler Nummer ");
+          strcat(print, point);
+          strcat(print, " (");
+          strcat(print, playName);
+          strcat(print, ") ist ");
+
+          if(atoi(status)==1){
+            strcat(print, "bereit!");
+          }else if(atoi(status)==0){
+            strcat(print, "nicht bereit!");
+          }
+
+          if (playNum != NULL){
+            free(playNum);
+          }
+          if (playName != NULL){
+            free(playName);
+          }
+          if (status != NULL){
+            free(status);
+          }
+
+         
           
         } else if (match(request, "ENDPLAYERS")) {
           free(response);
           response = NULL;
+          strcpy(print, "Viel Spaß beim Spielen!");
           step++;
         } else {
           strcpy(response, "Error");
@@ -119,6 +239,12 @@ char *handle(char *request){
     if(response != NULL) {
       strcat(response, "\n");
     }
+
+    if(print != NULL){
+      printf("S: %s\n", print);
+      free(print);
+    }
+
     
     return  response;
     
