@@ -1,11 +1,20 @@
 #include "header.h"
 #include "serverConnectionHeader.h"
+#include "config.h" 
 
 //declare important variables
   char game_id[ID_LEN + 1];
   char player_number[2];
   char player_name[NAME_LEN + 1];
   char cip_version[VERSION_LEN + 1];
+  char portVal[BUFFERLENGTH_PORT];
+  char *paramNameHost = "hostname";
+  char *paramNamePort = "portnumber";
+  char *paramNameGame = "gamekindname";
+  char *string = "";
+  char *confile;
+
+  configparam confiparam;
 
 /*How-To-Use: call ./sysprak-client with two obligatory parameters: 
 -g <GAME_ID>  and two optional parameters: -p <PLAYER_NUMBER>
@@ -26,7 +35,7 @@ int main(int argc, char **argv)
   int ret;
 
   //get parameters
-  while ((ret = getopt(argc, argv, "g:p:")) != -1) {
+  while ((ret = getopt(argc, argv, "g:p:c:")) != -1) {
     switch(ret) {
       case 'g':
         if(is_valid_id(optarg)) {
@@ -60,7 +69,19 @@ int main(int argc, char **argv)
           fprintf(stderr, "The player number you entered is incorrect!");          
           return EXIT_FAILURE;
         }
-        
+       
+      case 'c':
+        if(is_valid_file(optarg,string)){
+        // if(strcmp(optarg,string) != 0){
+            strcpy(confile, optarg);
+            printf("The confile is %s. \n", confile);
+        } else {
+          strcpy(confile, "client.conf");                                                
+          createClientConfig();
+          printf("Using \"client.conf\" as confile. \n");
+        } 
+      break;
+
       default:
         break;
 
@@ -72,6 +93,20 @@ int main(int argc, char **argv)
     printf("No player set\n");
   }
 
+  //fill struct
+  char *hostValue = readConfig(paramNameHost);
+  strcpy(confiparam.hostName,hostValue);
+  free(hostValue);
+
+  char *gameKindValue = readConfig(paramNameGame);
+  strcpy(confiparam.gameKindName,gameKindValue);
+  free(gameKindValue);
+
+  char *portValue = readConfig(paramNamePort);
+  strcpy(portVal, portValue);
+  free(portValue);
+  confiparam.portNumber = atoi(portVal);
+  
   //connect to the MNM Server
   int socket_fd;
   if ((socket_fd = connectServer()) == -1){
