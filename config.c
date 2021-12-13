@@ -1,45 +1,34 @@
 #include "config.h"
 #include "header.h"
 
-char* readConfig(char* name) {
+char* readConfig(char* name, char *config) {
 
     FILE *file = NULL;       
     char *substring = NULL;
-    char *firstOcc = NULL;
-    char *line = NULL;
-    char *config = confile;   
     const char *delim = "= \n";                                                   
-    char string[BUFFERLENGTH] = {0};                                           
+    char string[BUFFERLENGTH];                                           
 
-    firstOcc = strstr(string, name);                          // finds the first occurrence of string in name
-    line = fgets(string,BUFFERLENGTH,file);                   //reads a line from the specified stream and stores it into the string pointed to by string
-  
     file = fopen(config, "r");                                //open config
 
-    if(file == NULL) {                                        //filter error: couldn't open file
+    if(file != NULL) {                                        //filter error: couldn't open file
         
-        perror("Error: Couldn't open file!");
-        exit(EXIT_FAILURE);
-
-    } else {                                                                        
-         
-        while(line) {                                         //while line true
-            
-            if(firstOcc != NULL) {                             // filter 
+         while(fgets(string,BUFFERLENGTH,file)) {               //reads a line from the specified stream and stores it into the string pointed to by string
+            if((strstr(string, name)) != NULL) {               // filter // finds the first occurrence of string in name 
 
                 substring = findValueParam(delim, string);   //function returns value of the parameter
                 break;
 
             } 
-        } 
+        }
+    } else {                                                                        
+        perror("Error: Couldn't open file!");
+        exit(EXIT_FAILURE);
+        
    }
 
   fclose (file);             //close config                                                  
 
-  char *res = NULL;
-  res = (char *)calloc(BUFFERLENGTH, sizeof(char));           // allocates the requested memory, returns a pointer to it and sets allocated memory to zero
-  strcpy(res, substring);  //copies the string pointed to
-  return res;
+  return substring;
 }
 
 
@@ -56,12 +45,11 @@ char* findValueParam(const char *delim, char *string) {
       pointer = strtok(NULL, delim);            //pointer moves one further
 
     }
-   // free(pointer);
     return res;
 }
 
 
-void createClientConfig() {
+void createClientConfig(char *confile) {
 
   FILE *file = NULL;
 
