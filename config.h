@@ -14,12 +14,9 @@ typedef struct{
     char gameKindName[BUFFERLENGTH];
 }configparam;
 
-//declare extern 
-extern char *confile;
-
 //define functions
-char* readConfig(char *name);
+char* readConfig(char *name, char *config);
 char* findValueParam(const char *delim, char *string);
-void createClientConfig();
+void createClientConfig(char *confile);
 
 #endif
