@@ -12,7 +12,8 @@
   char *paramNamePort = "portnumber";
   char *paramNameGame = "gamekindname";
   char *string = "";
-  char *confile;
+  char confile [100];
+  int test = 0;
 
   configparam confiparam;
 
@@ -71,14 +72,12 @@ int main(int argc, char **argv)
         }
        
       case 'c':
-        if(is_valid_file(optarg,string)){
+         if(is_valid_file(optarg,string)){
         // if(strcmp(optarg,string) != 0){
+            memset(confile, '\0', sizeof(confile));
             strcpy(confile, optarg);
             printf("The confile is %s. \n", confile);
-        } else {
-          strcpy(confile, "client.conf");                                                
-          createClientConfig();
-          printf("Using \"client.conf\" as confile. \n");
+            test = 1;
         } 
       break;
 
@@ -88,23 +87,35 @@ int main(int argc, char **argv)
     }
   }
 
+    
+ if(test == 0){
+   const char *conf = "client.conf";
+    memset(confile, '\0', sizeof(confile));
+    strcpy(confile, conf);                                                
+    createClientConfig(confile);
+    printf("Using \"client.conf\" as confile. \n");
+ }
+
   if(player_check == 0){
     strcpy(player_number,"");
     printf("No player set\n");
   }
 
   //fill struct
-  char *hostValue = readConfig(paramNameHost);
+  char *hostValue = readConfig(paramNameHost, confile);
+  memset(confiparam.hostName, '\0', sizeof(confiparam.hostName));
   strcpy(confiparam.hostName,hostValue);
-  free(hostValue);
+  hostValue = NULL;
 
-  char *gameKindValue = readConfig(paramNameGame);
+  char *gameKindValue = readConfig(paramNameGame, confile);
+  memset(confiparam.gameKindName, '\0', sizeof(confiparam.gameKindName));
   strcpy(confiparam.gameKindName,gameKindValue);
-  free(gameKindValue);
+  gameKindValue = NULL;
 
-  char *portValue = readConfig(paramNamePort);
+  char *portValue = readConfig(paramNamePort, confile);
+  memset(portVal, '\0', sizeof(portVal));
   strcpy(portVal, portValue);
-  free(portValue);
+  portValue = NULL;
   confiparam.portNumber = atoi(portVal);
   
   //connect to the MNM Server
