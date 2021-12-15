@@ -14,6 +14,7 @@
   char *string = "";
   char confile [100];
   int test = 0;
+  pid_t pid =0;
 
   configparam confiparam;
 
@@ -117,18 +118,34 @@ int main(int argc, char **argv)
   strcpy(portVal, portValue);
   portValue = NULL;
   confiparam.portNumber = atoi(portVal);
-  
-  //connect to the MNM Server
-  int socket_fd;
-  if ((socket_fd = connectServer()) == -1){
-      perror("connection");
-  }
-  //Phase1: the prolog interchange with the server
-  performConnection(socket_fd);
-  
- return EXIT_SUCCESS;
 
+
+ if((pid=fork())<0){
+   perror("Error splitting the process");
+   exit(EXIT_FAILURE);
+
+  }else if(pid == 0){
+    //CONNECTOR
+    //connect to the MNM Server
+    int socket_fd;
+    if ((socket_fd = connectServer()) == -1){
+      perror("connection");
+    }
+    //Phase1: the prolog interchange with the server
+    performConnection(socket_fd);
+    //close(socket_fd);
+  }else {
+    //THINKER
+    
+    
+  }
+
+ return EXIT_SUCCESS;
 }
+  
+  
+ 
+
 
 
 
