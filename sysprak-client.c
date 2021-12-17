@@ -136,6 +136,11 @@ int main(int argc, char **argv)
     //close(socket_fd);
   }else {
     //THINKER
+
+    if(waitpid(pid,  NULL, 0) != pid){
+      perror("Error while waiting for childprocess");
+      exit(EXIT_FAILURE);
+    }
     
     
   }

@@ -121,8 +121,8 @@ char *handle(char *request){
           
           int playNum1 = atoi(playnum)+1;
           char *pointer=malloc(sizeof(char)+1);
-          sprintf(pointer, "%d", playNum1);
-         
+          sprintf(pointer, "%d", playNum1); 
+                          
 
 
 
@@ -197,6 +197,8 @@ char *handle(char *request){
           int playNum1=atoi(playNum)+1;
           char playNumC=playNum1+'0';
           char *point=&playNumC;
+
+          
 
 
 

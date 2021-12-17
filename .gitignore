@@ -3,4 +3,5 @@
 *.exe
 *.json
 *.plist
+*.conf
 sysprak-client

@@ -1,6 +1,7 @@
 #include <stdio.h>    //for printf and fprintf
 #include <stdlib.h>   //for macros like EXIT_SUCCESS
 #include <unistd.h>   //for getopt
+#include <sys/wait.h>
 #ifndef header
 #define header
 
