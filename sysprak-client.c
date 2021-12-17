@@ -18,11 +18,28 @@
 
   configparam confiparam;
 
+  //Variables for SHM Segments
+  int shmID_serverInfo;
+  int shmID_player;
+  int *shmIDplayer;  //hier einmal als Pointer definiert damit die Variable zum attachen benutzt werden kann
+
+  struct serverinfo *serverinfo;
+
+
+//Hilfsfunktion zum Löschen der SHM Segmente beim Terminieren
+static void exit_handler(void){
+  shmID_player = deletingSHM(shmID_player);
+  shmID_serverInfo = deletingSHM(shmID_serverInfo);
+
+}
 /*How-To-Use: call ./sysprak-client with two obligatory parameters: 
 -g <GAME_ID>  and two optional parameters: -p <PLAYER_NUMBER>
 */
 int main(int argc, char **argv)
 {
+  //create SHM Segments
+  shmID_player = creatingSHM(BUFFERLENGTH*sizeof(int)); //vllt auch stattdessen sizeof(struct player)
+  shmID_serverInfo = creatingSHM(sizeof(struct serverinfo)); 
 
   //two parameters are optional, so there are 3 or 5 parameters in total.
   if(argc != 3 && argc != 5) {
@@ -126,16 +143,31 @@ int main(int argc, char **argv)
 
   }else if(pid == 0){
     //CONNECTOR
+    //Aufruf Hilfsfunktion zum Löschen der Segmente
+    atexit(exit_handler);
     //connect to the MNM Server
     int socket_fd;
     if ((socket_fd = connectServer()) == -1){
       perror("connection");
     }
+    //Attachen der SHM Bereiche
+    serverinfo = attachingSHM(shmID_serverInfo);
+    shmIDplayer = attachingSHM(shmID_player);
+
     //Phase1: the prolog interchange with the server
     performConnection(socket_fd);
     //close(socket_fd);
   }else {
     //THINKER
+
+    //SHM Segmente im Thinker attachen
+    serverinfo = attachingSHM(shmID_serverInfo);
+    shmIDplayer = attachingSHM(shmID_player);
+    //Speichern der PID im Struct
+    serverinfo->thinker =getpid();
+    serverinfo->connector= pid;
+
+    
 
     if(waitpid(pid,  NULL, 0) != pid){
       perror("Error while waiting for childprocess");

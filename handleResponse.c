@@ -100,6 +100,7 @@ char *handle(char *request){
           strcat(response, player_number); 
 
           strcpy(print, "Diese Partie trägt den Namen : \'");
+          strcpy(serverinfo->nameOfGame, request);
           //char *gamename = substring(request, 0, strlen(request));
           strcat(print, request);
           strcat(print, "\'.");
