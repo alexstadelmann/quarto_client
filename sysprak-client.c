@@ -27,11 +27,26 @@
 
 
 //Hilfsfunktion zum Löschen der SHM Segmente beim Terminieren
-static void exit_handler(void){
+static void handleExit(void){
+  if(shmIDplayer != 0){
+    for(int i=0; i<serverinfo->totalPlayers-1; i++){
+      if(shmIDplayer[i]!=0){
+        shmIDplayer[i] = deletingSHM(shmIDplayer[i]);
+      }
+    }
+  }
   shmID_player = deletingSHM(shmID_player);
   shmID_serverInfo = deletingSHM(shmID_serverInfo);
-
 }
+
+void attachPlayers(int sig){
+  (void)sig;
+  for (int i= 0; i< serverinfo->totalPlayers-1; i++){
+    serverinfo->restPlayers[i] =attachingSHM(shmIDplayer[i]);
+  }
+}
+
+
 /*How-To-Use: call ./sysprak-client with two obligatory parameters: 
 -g <GAME_ID>  and two optional parameters: -p <PLAYER_NUMBER>
 */
@@ -40,7 +55,10 @@ int main(int argc, char **argv)
   //create SHM Segments
   shmID_player = creatingSHM(BUFFERLENGTH*sizeof(int)); //vllt auch stattdessen sizeof(struct player)
   shmID_serverInfo = creatingSHM(sizeof(struct serverinfo)); 
+  //signal for players
+  signal(SIGUSR2, attachPlayers); 
 
+  
   //two parameters are optional, so there are 3 or 5 parameters in total.
   if(argc != 3 && argc != 5) {
     fprintf(stderr, "Incorrect number of arguments!\n");
@@ -144,7 +162,7 @@ int main(int argc, char **argv)
   }else if(pid == 0){
     //CONNECTOR
     //Aufruf Hilfsfunktion zum Löschen der Segmente
-    atexit(exit_handler);
+    atexit(handleExit);
     //connect to the MNM Server
     int socket_fd;
     if ((socket_fd = connectServer()) == -1){

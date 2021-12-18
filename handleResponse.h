@@ -14,6 +14,7 @@
 //extern char *player_number;
 int step;                       //Wächter, dass kein Schritt übersprungen wurde
 extern struct serverinfo *serverinfo;
+extern int* shmIDplayer;
 
 char *handle(char *request);
 

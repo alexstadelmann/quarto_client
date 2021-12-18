@@ -1,6 +1,7 @@
 #include "handleResponse.h"
 
 int step = 1;
+int countPlayer =0; 
 
 char *handle(char *request){
     char *response;
@@ -100,7 +101,7 @@ char *handle(char *request){
           strcat(response, player_number); 
 
           strcpy(print, "Diese Partie trägt den Namen : \'");
-          strcpy(serverinfo->nameOfGame, request);
+          strcpy(serverinfo->nameOfGame, request); //speichere Spielenamen im Struct
           //char *gamename = substring(request, 0, strlen(request));
           strcat(print, request);
           strcat(print, "\'.");
@@ -132,7 +133,9 @@ char *handle(char *request){
 
           strcpy(print, "Du (");
           strcat(print, playname );
+          strcpy(serverinfo->ourPlayerName,playname);      //Spielername
           strcat(print, ") bist Spieler Nummer ");
+          serverinfo->assignedPlayerNumber=atoi(pointer); //Spielernummer
           strcat(print, pointer);
           strcat(print, "!");
 
@@ -167,6 +170,7 @@ char *handle(char *request){
 
           char *totalPlayer = substring(request, 6, strlen(request));
           int anz = atoi(totalPlayer);
+          serverinfo->totalPlayers = atoi(totalPlayer); //Totale Anzahl der Spieler ins Struct
           if(anz > 1){
             strcpy(print, "Es nehmen ");
           }else{
@@ -174,6 +178,13 @@ char *handle(char *request){
           }
           strcat(print, totalPlayer);
           strcat(print, " Spieler am Spiel teil.");
+          //Anlegen von SHM Segmenten für jeden Player, da hier Totalplayeranzahl bekannt
+          for (int i=0; i<serverinfo->totalPlayers-1; i++){
+            shmIDplayer[i] =creatingSHM(sizeof(struct player));
+            serverinfo->restPlayers[i] = attachingSHM(shmIDplayer[i]);
+          }
+
+
           if (totalPlayer != NULL)
           {
             free(totalPlayer);
@@ -198,17 +209,18 @@ char *handle(char *request){
           int playNum1=atoi(playNum)+1;
           char playNumC=playNum1+'0';
           char *point=&playNumC;
-
           
-
-
-
+          serverinfo->restPlayers[countPlayer]->playerNumber = atoi(playNum);
+          serverinfo->restPlayers[countPlayer]->ready = atoi(status);
+          strcpy(serverinfo->restPlayers[countPlayer]->playerName, playName);
+          
           strcpy(print, "Spieler Nummer ");
           strcat(print, point);
           strcat(print, " (");
           strcat(print, playName);
           strcat(print, ") ist ");
-
+          
+          
           if(atoi(status)==1){
             strcat(print, "bereit!");
           }else if(atoi(status)==0){
@@ -225,7 +237,7 @@ char *handle(char *request){
             free(status);
           }
 
-         
+         countPlayer++;
           
         } else if (match(request, "ENDPLAYERS")) {
           free(response);
