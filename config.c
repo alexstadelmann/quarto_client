@@ -4,9 +4,10 @@
 char* readConfig(char* name, char *config) {
 
     FILE *file = NULL;       
-    char *substring = NULL;
+    char *stringV = NULL;
     const char *delim = "= \n";                                                   
-    char string[BUFFERLENGTH];                                           
+    char string[BUFFERLENGTH];  
+    char *res = calloc(BUFFERLENGTH, sizeof(char)+1);                                         
 
     file = fopen(config, "r");                                //open config
 
@@ -15,7 +16,7 @@ char* readConfig(char* name, char *config) {
          while(fgets(string,BUFFERLENGTH,file)) {               //reads a line from the specified stream and stores it into the string pointed to by string
             if((strstr(string, name)) != NULL) {               // filter // finds the first occurrence of string in name 
 
-                substring = findValueParam(delim, string);   //function returns value of the parameter
+                stringV = findValueParam(delim, string);   //function returns value of the parameter
                 break;
 
             } 
@@ -28,7 +29,10 @@ char* readConfig(char* name, char *config) {
 
   fclose (file);             //close config                                                  
 
-  return substring;
+  memset(res, '\0', sizeof(res)+1);
+  strcpy(res, stringV);
+  return res;
+  
 }
 
 
