@@ -248,6 +248,38 @@ char *handle(char *request){
           strcpy(response, "Error");
         }
         break;
+
+      
+      case 8:  //Unterscheidung in welchen case wir springen
+        if(match(request, "MOVE")){   
+          step = 9;   
+        }
+        if(match(request, "WAIT")){   
+          step = 10;
+        } 
+        if(match(request, "GAMEOVER")){   
+          step = 11;
+        } else {
+          strcpy(response, "Error");
+        }
+        break; 
+
+
+      case 9:    //Move-zweig
+        //Eigentlicher Move-Zweig
+        step = 8;
+
+
+      case 10:    //Wait-Zweig
+        //Eigentlicher Wait-Zweig
+        step = 8;
+
+      case 11:   //Gameover
+        //Eigentlicher Gameover-Zweig
+        //?Fraglich wo wir hinspringen? Whrsl. endet hier dieser Zweig
+
+
+
       default:
         free(response);
         response = NULL;
