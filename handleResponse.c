@@ -1,7 +1,7 @@
 #include "handleResponse.h"
 
 int step = 1;
-int countPlayer =0; 
+int countPlayer = 0; 
 
 char *handle(char *request){
     char *response;
@@ -275,7 +275,7 @@ char *handle(char *request){
         step = 8;
 
       case 11:   //Gameover
-char *winName = NULL;
+      char *winName = NULL;
       char *winNumber = NULL;
 
         strcpy(print,"GAMEOVER  [[ ");  //print richtig?
