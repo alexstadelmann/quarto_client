@@ -275,8 +275,46 @@ char *handle(char *request){
         step = 8;
 
       case 11:   //Gameover
+char *winName = NULL;
+      char *winNumber = NULL;
+
+        strcpy(print,"GAMEOVER  [[ ");  //print richtig?
+
+        if(){  //ein gewinner
+          if(){ //erster spieler
+
+          } else if(){ //zweiter spieler
+
+          } else if(){ //ka, ob das überhaupt notwendig ist
+
+          } else {
+            //fehler
+          }
+          strcpy(print,winName); //strcat ?
+          strcpy(print, winNumber);
+        } else if(){ //untentschieden
+          strcpy(print, " "); //es wird kein Gewinner angegeben
+        } else {
+          strcpy(response, "Error");
+        }
+
+        //fehlt spielenummer und spielername des gewinners: if vergleich, wer gewonnen hat -> gewinner ausgeben
+        strcat(print, " ]]");
+
+        strcpy(print,"FIELD");
+        //fehlt breite des spielfelds
+        strcat(print, ", ");
+        //fehlt höhe des spielfelds
+
+        // fehlt: siehe Meilenstein1 Blatt ??
+
+        strcpy(print,"ENDFIELD");
+        strcpy(print,"QUIT");
+        //spiel beenden mit ?? Abbau der TCp-Verbindung durch Gameserver
+
         //Eigentlicher Gameover-Zweig
         //?Fraglich wo wir hinspringen? Whrsl. endet hier dieser Zweig
+        break;
 
 
 
