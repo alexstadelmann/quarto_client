@@ -267,12 +267,29 @@ char *handle(char *request){
 
       case 9:    //Move-zweig
         //Eigentlicher Move-Zweig
+        if(match(request, "MOVE")) {
+          move = 1;
+          if(response != NULL){
+            free(response);
+          }
+        response = NULL;
+       // if(print != NULL){ //???
+       //   free(print);
+       // }
+       // print = NULL;
         step = 8;
+
+        break;
 
 
       case 10:    //Wait-Zweig
         //Eigentlicher Wait-Zweig
+        if(match(request, "WAIT")) { //fehlt noch etwas?
+          strcpy(response, "OKWAIT");
+          strcpy(print,"wait"); //????
+        }
         step = 8;
+        break;
 
       case 11:   //Gameover
       char *winName = NULL;
