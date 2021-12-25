@@ -2,6 +2,7 @@
 
 int step = 1;
 int countPlayer = 0; 
+int move = 0;
 
 char *handle(char *request){
     char *response;
@@ -267,11 +268,10 @@ char *handle(char *request){
 
       case 9:    //Move-zweig
         //Eigentlicher Move-Zweig
-        if(match(request, "MOVE")) {
-          move = 1;
-          if(response != NULL){
-            free(response);
-          }
+        move = 1;
+        if(response != NULL){
+          free(response);
+        }
         response = NULL;
        // if(print != NULL){ //???
        //   free(print);
@@ -284,10 +284,9 @@ char *handle(char *request){
 
       case 10:    //Wait-Zweig
         //Eigentlicher Wait-Zweig
-        if(match(request, "WAIT")) { //fehlt noch etwas?
-          strcpy(response, "OKWAIT");
-          strcpy(print,"wait"); //????
-        }
+        //fehlt noch etwas?
+        strcpy(response, "OKWAIT");
+        strcpy(print,"wait"); //????
         step = 8;
         break;
 
