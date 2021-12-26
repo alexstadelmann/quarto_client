@@ -254,82 +254,91 @@ char *handle(char *request){
       case 8:  //Unterscheidung in welchen case wir springen
         if(match(request, "MOVE")){   
           step = 9;   
-        }
+        }  
         if(match(request, "WAIT")){   
           step = 10;
         } 
         if(match(request, "GAMEOVER")){   
           step = 11;
-        } else {
+        } else {  //?
           strcpy(response, "Error");
         }
         break; 
 
 
-      case 9:    //Move-zweig
-        //Eigentlicher Move-Zweig
+      case 9:    //Move-zweig    //fehlt:siehe MSBlatt1 + ist MOVEOK an der richtigen stelle? 
+        //Eigentlicher Move-Zweig  
         move = 1;
+
         if(response != NULL){
           free(response);
         }
         response = NULL;
-       // if(print != NULL){ //???
-       //   free(print);
-       // }
-       // print = NULL;
+
+        if(print != NULL){ 
+          free(print);
+        }
+        print = NULL;
+        
+        if(match(request, "MOVEOK")){
+          if(response!=NULL){
+            free(response);
+          }
+          response = NULL;
+          strcpy(print,"Move is vaild");
+        }
         step = 8;
-
         break;
-
 
       case 10:    //Wait-Zweig
         //Eigentlicher Wait-Zweig
-        //fehlt noch etwas?
-        strcpy(response, "OKWAIT");
-        strcpy(print,"wait"); //????
+        //fehlt noch etwas? 
+          strcpy(response, "OKWAIT");
+          strcpy(print,"wait"); //?
         step = 8;
         break;
 
-      case 11:   //Gameover
+      case 11:   //Gameover 
       char *winName = NULL;
       char *winNumber = NULL;
+      bool player1 = false;
+      bool player2 = false;
+      int breite = 4;
+      int hoehe = 4;
 
-        strcpy(print,"GAMEOVER  [[ ");  //print richtig?
+        strcpy(print,"GAMEOVER  [[ ");  
 
-        if(){  //ein gewinner
-          if(){ //erster spieler
+        //gewinner ermitteln: fehlt
+        //fehlt spielenummer und spielername des gewinners
 
-          } else if(){ //zweiter spieler
 
-          } else if(){ //ka, ob das überhaupt notwendig ist
-
-          } else {
-            //fehler
-          }
+        if(player1 && !player2){ //erster spieler
+          strcpy(print,winName); 
+          strcpy(print, winNumber);
+        } else if(!player1 && player2){ //zweiter spieler
           strcpy(print,winName); //strcat ?
           strcpy(print, winNumber);
-        } else if(){ //untentschieden
-          strcpy(print, " "); //es wird kein Gewinner angegeben
-        } else {
-          strcpy(response, "Error");
+        } else { //untentschieden
+          strcpy(print, "undecided game"); //es wird kein Gewinner angegeben
         }
 
-        //fehlt spielenummer und spielername des gewinners: if vergleich, wer gewonnen hat -> gewinner ausgeben
         strcat(print, " ]]");
 
-        strcpy(print,"FIELD");
-        //fehlt breite des spielfelds
+        strcpy(print,"FIELD"); //immer 4x4
+        strcpy(print, "%i",breite);
         strcat(print, ", ");
-        //fehlt höhe des spielfelds
+        strcpy(print, "%i",hoehe);
 
-        // fehlt: siehe Meilenstein1 Blatt ??
+        // fehlt: siehe Meilenstein1 Blatt ?? Funktion printFeld() wäre an der Stelle super!
 
         strcpy(print,"ENDFIELD");
-        strcpy(print,"QUIT");
-        //spiel beenden mit ?? Abbau der TCp-Verbindung durch Gameserver
+        strcpy(print,"QUIT"); //beendet das Spiel (anscheinend: QUIT)
 
-        //Eigentlicher Gameover-Zweig
-        //?Fraglich wo wir hinspringen? Whrsl. endet hier dieser Zweig
+        if(response!=NULL){
+          free(response);
+        }
+        response = NULL;
+
         break;
 
 
