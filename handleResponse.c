@@ -1,12 +1,15 @@
 #include "handleResponse.h"
+#include <unistd.h>
 
 int step = 1;
 int countPlayer = 0; 
 int move = 0;
+int sleepCounter = 10;
 
 char *handle(char *request){
     char *response;
     char *print;
+    
 
 
     if((response = (char*) malloc(BUFFERLENGTH*sizeof(char))) == NULL){
@@ -253,7 +256,8 @@ char *handle(char *request){
       
       case 8:  //Unterscheidung in welchen case wir springen
         if(match(request, "MOVE")){   
-          step = 9;   
+          step = 9;
+          sleepCounter = 10;   
         }  
         if(match(request, "WAIT")){   
           step = 10;
@@ -317,7 +321,13 @@ char *handle(char *request){
         //fehlt noch etwas? -evtl hier verhindern dass man in eine Dauerschleife rein läuft
         strcpy(response, "OKWAIT");
         strcpy(print,"wait"); //?
-        step = 8;
+        sleep(1);
+        sleepCounter--;
+        if (sleepCounter <= 0){
+          strcpy(response, "Error");
+        }else{
+          step = 8;
+        }
         break;
 
       case 11:   //Gameover 
