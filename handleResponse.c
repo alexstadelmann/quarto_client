@@ -269,6 +269,26 @@ char *handle(char *request){
       case 9:    //Move-zweig    //fehlt:siehe MSBlatt1 + ist MOVEOK an der richtigen stelle? 
         //Eigentlicher Move-Zweig  
         move = 1;
+        int breite = 4;
+        int hoehe = 4;
+        char *zeitMax = NULL; //könnte auch was anderes sein: Maximale Zugzeit
+
+        strcpy(print,"MOVE"); 
+        strcpy(print, zeitMax);
+
+        strcpy(print,"NEXT"); 
+        strcpy(print, ); //zu setzender Spielstein
+
+        strcpy(print,"FIELD"); //immer 4x4
+        strcpy(print, "%i",breite);
+        strcat(print, ", ");
+        strcpy(print, "%i",hoehe);
+
+        // fehlt: siehe Meilenstein1 Blatt ?? Funktion printFeld() wäre an der Stelle super!
+
+        strcpy(print,"ENDFIELD");
+
+        //thinking
 
         if(response != NULL){
           free(response);
@@ -310,19 +330,37 @@ char *handle(char *request){
 
         strcpy(print,"GAMEOVER  [[ ");  
 
-        //gewinner ermitteln: fehlt
-        //fehlt spielenummer und spielername des gewinners
         //sollte vom Server ermittelt werden wer gewonnen hat
 
 
+        //gewinner ermitteln: ka ob das stimmt
+        char *won = substring(request, 11, strlen(request)); //11?
+        if (!strcmp(won, "Yes")){  //"Yes"?
+          player1 = true;
+        } else {
+          player2 = true;
+        }
+        //fehlt spielername + nummer des gewinners
+
+
         if(player1 && !player2){ //erster spieler
+
+          winName = ;
+          winNumber = ;  
           strcpy(print,winName); 
           strcpy(print, winNumber);
+
         } else if(!player1 && player2){ //zweiter spieler
+
+          winName = ;
+          winNumber = ;   
           strcpy(print,winName); //strcat ?
           strcpy(print, winNumber);
+
         } else { //untentschieden
+
           strcpy(print, "undecided game"); //es wird kein Gewinner angegeben
+
         }
 
         strcat(print, " ]]");
