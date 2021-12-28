@@ -280,6 +280,8 @@ char *handle(char *request){
         }
         print = NULL;
         
+        //hier muss doch noch der Move gesendet werden
+
         if(match(request, "MOVEOK")){
           if(response!=NULL){
             free(response);
@@ -292,24 +294,25 @@ char *handle(char *request){
 
       case 10:    //Wait-Zweig
         //Eigentlicher Wait-Zweig
-        //fehlt noch etwas? 
-          strcpy(response, "OKWAIT");
-          strcpy(print,"wait"); //?
+        //fehlt noch etwas? -evtl hier verhindern dass man in eine Dauerschleife rein läuft
+        strcpy(response, "OKWAIT");
+        strcpy(print,"wait"); //?
         step = 8;
         break;
 
       case 11:   //Gameover 
-      char *winName = NULL;
-      char *winNumber = NULL;
-      bool player1 = false;
-      bool player2 = false;
-      int breite = 4;
-      int hoehe = 4;
+        char *winName = NULL;
+        char *winNumber = NULL;
+        bool player1 = false;
+        bool player2 = false;
+        int breite = 4;
+        int hoehe = 4;
 
         strcpy(print,"GAMEOVER  [[ ");  
 
         //gewinner ermitteln: fehlt
         //fehlt spielenummer und spielername des gewinners
+        //sollte vom Server ermittelt werden wer gewonnen hat
 
 
         if(player1 && !player2){ //erster spieler
