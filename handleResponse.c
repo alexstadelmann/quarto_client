@@ -276,8 +276,8 @@ char *handle(char *request){
         strcpy(print,"MOVE"); 
         strcpy(print, zeitMax);
 
-        strcpy(print,"NEXT"); 
-        strcpy(print, ); //zu setzender Spielstein
+        //strcpy(print,"NEXT"); 
+        //strcpy(print, ); //zu setzender Spielstein
 
         strcpy(print,"FIELD"); //immer 4x4
         strcpy(print, "%i",breite);
