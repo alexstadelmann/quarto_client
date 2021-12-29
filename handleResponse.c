@@ -266,7 +266,7 @@ char *handle(char *request){
         if(match(request, "WAIT")){   
           step = 10;
         } 
-        if(match(request, "GAMEOVER")){   
+        if(match(request, "GAMEOVER")){   //oder ist es doch das Wort Quit
           step = 11;
         } else {  //?
           strcpy(response, "Error");
@@ -319,10 +319,8 @@ char *handle(char *request){
         break;
 
       case 10:    //Wait-Zweig
-        //Eigentlicher Wait-Zweig
-        //fehlt noch etwas? -evtl hier verhindern dass man in eine Dauerschleife rein läuft
         strcpy(response, "OKWAIT");
-        strcpy(print,"wait"); //?
+        strcpy(print,"wait"); //fraglich ob nötig
         sleep(1);
         sleepCounter--;
         if (sleepCounter <= 0){
@@ -332,8 +330,8 @@ char *handle(char *request){
         }
         break;
 
-      case 11:   //Gameover 
 
+      case 11:   //Gameover 
 //sollte vom Server ermittelt werden wer gewonnen hat
 
         strcpy(print,"GAMEOVER  [[ ");  
@@ -365,7 +363,7 @@ char *handle(char *request){
 
         if(player1 && !player2){ //erster spieler
  
-          strcpy(print,playname); 
+          strcpy(print, playname); 
           strcpy(print, pointer);
 
         } else if(!player1 && player2){ //zweiter spieler
