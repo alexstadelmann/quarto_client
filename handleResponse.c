@@ -266,7 +266,7 @@ char *handle(char *request){
         if(match(request, "WAIT")){   
           step = 10;
         } 
-        if(match(request, "GAMEOVER")){   //oder ist es doch das Wort Quit
+        if(match(request, "GAMEOVER")){   
           step = 11;
         } else {  //?
           strcpy(response, "Error");
@@ -274,49 +274,24 @@ char *handle(char *request){
         break; 
 
 
-      case 9:    //Move-zweig    //fehlt:siehe MSBlatt1 + ist MOVEOK an der richtigen stelle? 
-        //Eigentlicher Move-Zweig  
-        move = 1;
-        int zeitMax = 5; //könnte auch was anderes sein: Maximale Zugzeit; muss noch implementiert werden
-
-        strcpy(print,"MOVE"); 
-        sprintf(print,"%i", zeitMax);
-
-        strcpy(print,"NEXT"); 
-        strcpy(print, ""); //zu setzender Spielstein //austauschen mit variable/o.a.
-
-        strcpy(print,"FIELD"); //immer 4x4
-        sprintf(print,"%i", breite);
-        strcat(print, ", ");
-        sprintf(print,"%i", hoehe);
-
-        // fehlt: siehe Meilenstein1 Blatt ?? Funktion printFeld() wäre an der Stelle super!
-
-        strcpy(print,"ENDFIELD");
-
-        //thinking
-
-        if(response != NULL){
-          free(response);
+      case 9:           //Server hat Move geschickt
+        //server schickt das Spielfeld, so lange warten
+        while(not match(request, "ENDFIELD")){
+          //Dauerschleife bis Schlüsselwort kommt
         }
-        response = NULL;
-
-        if(print != NULL){ 
-          free(print);
-        }
-        print = NULL;
         
-        //hier muss doch noch der Move gesendet werden
+        //hier einlesen des Spielfelds depending on Thniking-Method
 
-        if(match(request, "MOVEOK")){
-          if(response!=NULL){
-            free(response);
-          }
-          response = NULL;
-          strcpy(print,"Move is vaild");
-        }
+        //dem Server Antworten
+        strcpy(response, "THINKING");
+
+        //Jetzt Aufgabe Phase Spielzug (Spielzug berechnen und senden) - aufruf der Methode inkl. Senden des Spielzugs
+
         step = 8;
         break;
+
+
+
 
       case 10:    //Wait-Zweig
         strcpy(response, "OKWAIT");
@@ -333,8 +308,6 @@ char *handle(char *request){
 
       case 11:   //Gameover 
 //sollte vom Server ermittelt werden wer gewonnen hat
-
-        strcpy(print,"GAMEOVER  [[ ");  
 
         //gewinner ermitteln: ka ob das stimmt
         char *won1 = substring(request, 11, strlen(request)); //11?
@@ -365,11 +338,13 @@ char *handle(char *request){
  
           strcpy(print, playname); 
           strcpy(print, pointer);
+          strcpy(print, "won the game");
 
         } else if(!player1 && player2){ //zweiter spieler
   
           strcpy(print,playname); //strcat ?
           strcpy(print, pointer);
+          strcpy(print, "won the game");
 
         } else { //untentschieden
 
@@ -377,7 +352,6 @@ char *handle(char *request){
 
         }
 
-        strcat(print, " ]]");
 
         strcpy(print,"FIELD"); //immer 4x4
         sprintf(print,"%i",breite);
