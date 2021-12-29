@@ -16,7 +16,13 @@ char* readConfig(char* name, char *config) {
          while(fgets(string,BUFFERLENGTH,file)) {               //reads a line from the specified stream and stores it into the string pointed to by string
             if((strstr(string, name)) != NULL) {               // filter // finds the first occurrence of string in name 
 
-                stringV = findValueParam(delim, string);   //function returns value of the parameter
+                pointer = strtok(string,delim);
+
+                while(pointer != NULL) {
+                  stringV = pointer;
+                  pointer = strtok(NULL, delim);
+                }
+                
                 break;
 
             } 
@@ -34,24 +40,6 @@ char* readConfig(char* name, char *config) {
   return res;
   
 }
-
-
-char* findValueParam(const char *delim, char *string) {  
-
-    char *pointer = NULL;                                                                 
-    char *res = NULL;
-
-    pointer = strtok(string, delim);            //breaks string into a series of tokens using delim
-
-    while(pointer != NULL) {                             //while pointer is not finished
-
-      res = pointer;
-      pointer = strtok(NULL, delim);            //pointer moves one further
-
-    }
-    return res;
-}
-
 
 void createClientConfig(char *confile) {
 
