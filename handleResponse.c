@@ -333,31 +333,8 @@ char *handle(char *request){
         break;
 
       case 11:   //Gameover 
-        char *winName = NULL;
-        char *winNumber = NULL;
-        bool player1 = false;
-        bool player2 = false;
-        int breite = 4;
-        int hoehe = 4;
 
-        strcpy(print,"GAMEOVER  [[ ");  
-
-        //sollte vom Server ermittelt werden wer gewonnen hat
-
-
-        //gewinner ermitteln: ka ob das stimmt
-        char *won = substring(request, 11, strlen(request)); //11?
-        if (!strcmp(won, "Yes")){  //"Yes"?
-          player1 = true;
-        } else {
-          player2 = true;
-        }
-        //fehlt spielername + nummer des gewinners
-
-
-        if(player1 && !player2){ //erster spieler
-
-       //sollte vom Server ermittelt werden wer gewonnen hat
+//sollte vom Server ermittelt werden wer gewonnen hat
 
         strcpy(print,"GAMEOVER  [[ ");  
 
@@ -413,6 +390,7 @@ char *handle(char *request){
 
         strcpy(print,"ENDFIELD");
         strcpy(print,"QUIT"); //beendet das Spiel (anscheinend: QUIT)
+
 
         if(response!=NULL){
           free(response);
