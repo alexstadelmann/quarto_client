@@ -4,6 +4,10 @@
 int step = 1;
 int countPlayer = 0; 
 int move = 0;
+bool player1 = false;
+bool player2 = false;
+int breite = 4;
+int hoehe = 4;
 int sleepCounter = 10;
 
 char *handle(char *request){
@@ -273,20 +277,18 @@ char *handle(char *request){
       case 9:    //Move-zweig    //fehlt:siehe MSBlatt1 + ist MOVEOK an der richtigen stelle? 
         //Eigentlicher Move-Zweig  
         move = 1;
-        int breite = 4;
-        int hoehe = 4;
-        char *zeitMax = NULL; //könnte auch was anderes sein: Maximale Zugzeit
+        int zeitMax = 5; //könnte auch was anderes sein: Maximale Zugzeit; muss noch implementiert werden
 
         strcpy(print,"MOVE"); 
-        strcpy(print, zeitMax);
+        sprintf(print,"%i", zeitMax);
 
-        //strcpy(print,"NEXT"); 
-        //strcpy(print, ); //zu setzender Spielstein
+        strcpy(print,"NEXT"); 
+        strcpy(print, ""); //zu setzender Spielstein //austauschen mit variable/o.a.
 
         strcpy(print,"FIELD"); //immer 4x4
-        strcpy(print, "%i",breite);
+        sprintf(print,"%i", breite);
         strcat(print, ", ");
-        strcpy(print, "%i",hoehe);
+        sprintf(print,"%i", hoehe);
 
         // fehlt: siehe Meilenstein1 Blatt ?? Funktion printFeld() wäre an der Stelle super!
 
@@ -355,17 +357,44 @@ char *handle(char *request){
 
         if(player1 && !player2){ //erster spieler
 
-          winName = ;
-          winNumber = ;  
-          strcpy(print,winName); 
-          strcpy(print, winNumber);
+       //sollte vom Server ermittelt werden wer gewonnen hat
+
+        strcpy(print,"GAMEOVER  [[ ");  
+
+        //gewinner ermitteln: ka ob das stimmt
+        char *won1 = substring(request, 11, strlen(request)); //11?
+        if (!strcmp(won1, "Yes")){  //"Yes"?
+          player1 = true;
+        } else {
+          player1 = false;
+        }
+
+        char *won2 = substring(request, 11, strlen(request)); //11?
+        if (!strcmp(won2, "Yes")){  //"Yes"?
+          player2 = true;
+        } else {
+          player2 = false;
+        }
+        //fehlt spielername + nummer des gewinners
+
+          char *playnum = substring(request, 4, 5);
+          char *playname = substring(request, 6, strlen(request)); 
+
+          
+          int playNum1 = atoi(playnum)+1;
+          char *pointer=malloc(sizeof(char)+1);
+          sprintf(pointer, "%d", playNum1); 
+
+
+        if(player1 && !player2){ //erster spieler
+ 
+          strcpy(print,playname); 
+          strcpy(print, pointer);
 
         } else if(!player1 && player2){ //zweiter spieler
-
-          winName = ;
-          winNumber = ;   
-          strcpy(print,winName); //strcat ?
-          strcpy(print, winNumber);
+  
+          strcpy(print,playname); //strcat ?
+          strcpy(print, pointer);
 
         } else { //untentschieden
 
@@ -376,9 +405,9 @@ char *handle(char *request){
         strcat(print, " ]]");
 
         strcpy(print,"FIELD"); //immer 4x4
-        strcpy(print, "%i",breite);
+        sprintf(print,"%i",breite);
         strcat(print, ", ");
-        strcpy(print, "%i",hoehe);
+        sprintf(print,"%i", hoehe);
 
         // fehlt: siehe Meilenstein1 Blatt ?? Funktion printFeld() wäre an der Stelle super!
 
