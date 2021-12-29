@@ -16,7 +16,6 @@ typedef struct{
 
 //define functions
 char* readConfig(char *name, char *config);
-char* findValueParam(const char *delim, char *string);
 void createClientConfig(char *confile);
 
 #endif
