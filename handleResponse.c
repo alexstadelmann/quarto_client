@@ -312,7 +312,7 @@ char *handle(char *request){
             free(response);
           }
 
-          char *won0 = substring(request, 11, strlen(request))
+          char *won0 = substring(request, 11, strlen(request));
           if(!strcmp(won0, "Yes")){
             player1 = 1;
           } 
@@ -324,7 +324,7 @@ char *handle(char *request){
             free(response);
           }
 
-          char *won1 = substring(request, 11, strlen(request))
+          char *won1 = substring(request, 11, strlen(request));
           if(!strcmp(won1, "Yes")){
             player2 = 1;
           } 
