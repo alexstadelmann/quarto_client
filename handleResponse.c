@@ -3,12 +3,9 @@
 
 int step = 1;
 int countPlayer = 0; 
-int move = 0;
-bool player1 = false;
-bool player2 = false;
-int breite = 4;
-int hoehe = 4;
 int sleepCounter = 10;
+bool player1 = 0;
+bool player2 = 0;
 
 char *handle(char *request){
     char *response;
@@ -255,13 +252,14 @@ char *handle(char *request){
         } else {
           strcpy(response, "Error");
         }
+        step++;
         break;
 
       
       case 8:  //Unterscheidung in welchen case wir springen
         if(match(request, "MOVE")){   
+          sleepCounter = 10; 
           step = 9;
-          sleepCounter = 10;   
         }  
         if(match(request, "WAIT")){   
           step = 10;
@@ -295,7 +293,6 @@ char *handle(char *request){
 
       case 10:    //Wait-Zweig
         strcpy(response, "OKWAIT");
-        strcpy(print,"wait"); //fraglich ob nötig
         sleep(1);
         sleepCounter--;
         if (sleepCounter <= 0){
@@ -303,59 +300,55 @@ char *handle(char *request){
         }else{
           step = 8;
         }
+
         break;
 
 
       case 11:   //Gameover 
-//sollte vom Server ermittelt werden wer gewonnen hat
 
-        //gewinner ermitteln: ka ob das stimmt
-
-        //fehlt spielername + nummer des gewinners
-
-          char *playnum = substring(request, 4, 5);
-          char *playname = substring(request, 6, strlen(request)); 
-
+        if(match(request, "PLAYER0WON")){  
           
-          int playNum1 = atoi(playnum)+1;
-          char *pointer=malloc(sizeof(char)+1);
-          sprintf(pointer, "%d", playNum1); 
+          if(response != NULL){
+            free(response);
+          }
 
+          char *won0 = substring(request, 11, strlen(request))
+          if(!strcmp(won0, "Yes")){
+            player1 = 1;
+          } 
+          free(won0);
 
-        if(player1 && !player2){ //erster spieler
- 
-          strcpy(print, playname); 
-          strcpy(print, pointer);
-          strcpy(print, "won the game");
+        } else if(match(request, "PLAYER1WON")) {
+          
+          if(response != NULL){
+            free(response);
+          }
 
-        } else if(!player1 && player2){ //zweiter spieler
-  
-          strcpy(print,playname); //strcat ?
-          strcpy(print, pointer);
-          strcpy(print, "won the game");
+          char *won1 = substring(request, 11, strlen(request))
+          if(!strcmp(won1, "Yes")){
+            player2 = 1;
+          } 
+          free(won2);
+        } 
 
-        } else { //untentschieden
-
-          strcpy(print, "undecided game"); //es wird kein Gewinner angegeben
-
-        }
-
-        //strcpy(print,"QUIT"); //beendet das Spiel (anscheinend: QUIT)
-        
         if(match(request, "QUIT")){   
-          //beenden   
-        } else {
-          strcpy(print,"Error!");
-        }
+          
+          if(player1 && !player2){ //erster spieler
+ 
+           strcpy(print, "Player 1 won the game.");
 
-        if(response!=NULL){
-          free(response);
-        }
-        response = NULL;
+          } else if(!player1 && player2){ //zweiter spieler
+
+            strcpy(print, "Player 2 won the game.");
+
+          } else { //untentschieden
+
+            strcpy(print, "The game is undecided."); 
+          }
+
+        } 
 
         break;
-
-
 
       default:
         free(response);
@@ -376,3 +369,5 @@ char *handle(char *request){
     return  response;
     
 }
+
+
