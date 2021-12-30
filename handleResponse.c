@@ -276,7 +276,7 @@ char *handle(char *request){
 
       case 9:           //Server hat Move geschickt
         //server schickt das Spielfeld, so lange warten
-        while(not match(request, "ENDFIELD")){
+        while(!match(request, "ENDFIELD")){
           //Dauerschleife bis Schlüsselwort kommt
         }
         
@@ -352,17 +352,13 @@ char *handle(char *request){
 
         }
 
-
-        strcpy(print,"FIELD"); //immer 4x4
-        sprintf(print,"%i",breite);
-        strcat(print, ", ");
-        sprintf(print,"%i", hoehe);
-
-        // fehlt: siehe Meilenstein1 Blatt ?? Funktion printFeld() wäre an der Stelle super!
-
-        strcpy(print,"ENDFIELD");
-        strcpy(print,"QUIT"); //beendet das Spiel (anscheinend: QUIT)
-
+        //strcpy(print,"QUIT"); //beendet das Spiel (anscheinend: QUIT)
+        
+        if(match(request, "QUIT")){   
+          //beenden   
+        } else {
+          strcpy(print,"Error!");
+        }
 
         if(response!=NULL){
           free(response);
