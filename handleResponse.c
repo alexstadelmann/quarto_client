@@ -328,7 +328,7 @@ char *handle(char *request){
           if(!strcmp(won1, "Yes")){
             player2 = 1;
           } 
-          free(won2);
+          free(won1);
         } 
 
         if(match(request, "QUIT")){   
