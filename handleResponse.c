@@ -252,7 +252,6 @@ char *handle(char *request){
         } else {
           strcpy(response, "Error");
         }
-        step++;
         break;
 
       
