@@ -310,19 +310,7 @@ char *handle(char *request){
 //sollte vom Server ermittelt werden wer gewonnen hat
 
         //gewinner ermitteln: ka ob das stimmt
-        char *won1 = substring(request, 11, strlen(request)); //11?
-        if (!strcmp(won1, "Yes")){  //"Yes"?
-          player1 = true;
-        } else {
-          player1 = false;
-        }
 
-        char *won2 = substring(request, 11, strlen(request)); //11?
-        if (!strcmp(won2, "Yes")){  //"Yes"?
-          player2 = true;
-        } else {
-          player2 = false;
-        }
         //fehlt spielername + nummer des gewinners
 
           char *playnum = substring(request, 4, 5);
