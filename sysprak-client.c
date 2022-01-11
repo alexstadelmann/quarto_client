@@ -25,6 +25,7 @@
   int *shmIDplayer;  //hier einmal als Pointer definiert damit die Variable zum attachen benutzt werden kann
 
   struct serverinfo *serverinfo;
+
 //Variables from the game phase:
 int moveTime;
 int field[4][4];
@@ -159,7 +160,25 @@ int main(int argc, char **argv)
   strcpy(portVal, portValue);
   portValue = NULL;
   confiparam.portNumber = atoi(portVal);
+ 
 
+//  int socket_fd;
+//  if ((socket_fd = connectServer()) == -1){
+//     perror("connection");
+//   }
+  
+//   //Attachen der SHM Bereiche
+//     serverinfo = attachingSHM(shmID_serverInfo);
+//     shmIDplayer = attachingSHM(shmID_player);
+
+
+//   if(!prolog(socket_fd)) {
+//       perror("prolog");
+//       return EXIT_FAILURE;
+//     }
+//     //game phase
+//     game(socket_fd);
+    //close(socket_fd);
 
  if((pid=fork())<0){
    perror("Error splitting the process");
@@ -178,13 +197,13 @@ int main(int argc, char **argv)
     serverinfo = attachingSHM(shmID_serverInfo);
     shmIDplayer = attachingSHM(shmID_player);
 
-    //Phase1: the prolog interchange with the server
+    //prolog phase
     //performConnection(socket_fd);
     if(!prolog(socket_fd)) {
       perror("prolog");
       return EXIT_FAILURE;
     }
-
+    //game phase
     game(socket_fd);
     //close(socket_fd);
   }else {

@@ -13,7 +13,7 @@ bool game(int socket_fd) {
   default (and "Idle") -> 0
   "Move" -> 1
   "Game Over" -> 2
-  "Spielzug" -> 3
+  "Choose Move" -> 3
   */
   int phase = 0;
 
@@ -24,18 +24,6 @@ bool game(int socket_fd) {
       perror("reading line");
       return false;
     }
-    printf("%s", line);
-    if(match(line + 2, "^ENDFIELD$")) {
-      puts("test");
-      char msg3[] = "THINKING";
-          if(write(socket_fd, msg3, sizeof(msg3)) == -1) {
-            perror("sending msg to server");
-            puts("uacamole");
-            return false;
-          }
-
-    }
-
     //check if message is negative
     if(line[0] == '-') {
       printf("S: Error! %s\nC: Disconnecting server...\n",line+2);
@@ -50,13 +38,13 @@ bool game(int socket_fd) {
 
         if(match(line + 2, "MOVE .+")){
           sscanf(line + 2, "MOVE %d", &moveTime);
-          printf("%d\n", moveTime);
           phase = 1;
           break;
         }
 
         if (match(line + 2, "WAIT")) {
-          char msg1[] = "OKWAIT";
+          char msg1[64];
+          strcpy(msg1,"OKWAIT");
           send(socket_fd, msg1, sizeof(msg1), 0);
           break;
         } 
@@ -66,6 +54,7 @@ bool game(int socket_fd) {
           phase = 3;
           break;
         }
+
         //should not reach this point
         perror("unexpected message from server");
         free(line);
@@ -74,7 +63,6 @@ bool game(int socket_fd) {
 
       //"Move"  
       case 1:
-        //printf("tadaa: %s\n", line + 2);
 
         if(match(line + 2, "NEXT .+")) {
           sscanf(line + 2, "NEXT %d", &nextPiece);
@@ -83,35 +71,35 @@ bool game(int socket_fd) {
         }
 
         if(match(line + 2, "^FIELD ?,?")) {
+          sscanf(line + 2, "FIELD %d,%d", &width, &height);
+          printf("width: %d and height %d\n", width, height);
           break;
         } 
-        if(match(line + 2, "ENDFIELD")) {
-          char msg2[] = "THINKING";
-          if(write(socket_fd, msg2, sizeof(msg2) == -1)) {
+
+        if(match(line + 2, "^ENDFIELD$")) {
+          char msg2[52];
+          strcpy(msg2, "THINKING\n");
+          if(write(socket_fd, msg2, sizeof(msg2)) == -1) {
             perror("sending msg to server");
-            puts("uacamole");
             return false;
           }
           printf("C: %s\n", msg2);
-          field[0][0] = 11;
-          field[3][0] = 1;
-          field[3][1] = 2;
-          printField(4, field);
           break;
         }
         if(match(line + 2, "OKTHINK")) {
+          printf("%s", line + 2);
           printField(4, field);
+          
           phase = 3;
-          break;
-        }
-        if(match(line + 2, "MOVEOK")) {
-          puts("Yuhuu");
           break;
         }
         recvField(line + 2);
         break;
     
-
+      default:
+      break;
     }
+
+    
   }
 }
