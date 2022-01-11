@@ -2,6 +2,32 @@
 #include "handleRequest.h"
 #include "prolog.h"
 
+char *intToBinary(int n) {
+    int counter = 0;
+    while (n != 0) {
+        if (n % 2 == 0) {
+            counter = counter + 1;
+        }
+        else {
+            counter = counter + 1;
+        }
+        n = n / 2;
+    }
+
+    char *result[counter];
+    counter = 0;
+
+    while (n != 0) {
+        if (n % 2 == 0) {
+            result[counter] = "0";
+        }
+        else {
+            result[counter] = "1";
+        }
+        n = n / 2;
+    }
+    return *result;
+}
 
 
 bool game(int socket_fd) {
