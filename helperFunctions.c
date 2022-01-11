@@ -1,4 +1,5 @@
 #include "header.h"
+#include <math.h>
 
 bool is_valid_id(char *arg) 
 {
@@ -50,3 +51,43 @@ int recv_all(int sockfd, char *buffer, size_t len)
   } while(buffer[packet_length - 1] != '\n');
   return packet_length;
 }
+
+bool read_line(int socket_fd, char* ptr) {
+  int len = 0;
+  do {
+
+    if((read(socket_fd, ptr + len, 1) == -1)) {
+      return false;
+    } len++;
+
+  } while (ptr[len - 1] != '\n');
+  ptr[len - 1] = '\0';
+  return true;
+}
+
+
+void printField(int n, int board[n][n]) {
+  
+  printf("\nNext: %d\n", nextPiece);
+  puts(" ------------");
+  for(int i = 0; i < n; i++) {
+    printf("|");
+    for(int j = 0; j < n; j++) {
+      if(board[i][j] == -1) {
+        printf(" * ");
+      } else if(board[i][j] < 10) {
+        printf(" %d ", board[i][j]);
+      } else{
+        printf(" %d",board[i][j]);
+      }
+      
+    }
+    printf("|\n");
+  }
+  puts(" ------------");
+}
+
+// void print_binary(double num) {
+//   double digits =  log(num);
+//   printf("digits: %f\n", digits);
+// }

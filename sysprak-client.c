@@ -1,6 +1,7 @@
 #include "header.h"
 #include "serverConnectionHeader.h"
 #include "config.h" 
+#include "prolog.h"
 
 //declare important variables
   char game_id[ID_LEN + 1];
@@ -24,7 +25,12 @@
   int *shmIDplayer;  //hier einmal als Pointer definiert damit die Variable zum attachen benutzt werden kann
 
   struct serverinfo *serverinfo;
-
+//Variables from the game phase:
+int moveTime;
+int field[4][4];
+int winner;
+char winnerName[126];
+int nextPiece;
 
 //Hilfsfunktion zum Löschen der SHM Segmente beim Terminieren
 static void handleExit(void){
@@ -173,7 +179,13 @@ int main(int argc, char **argv)
     shmIDplayer = attachingSHM(shmID_player);
 
     //Phase1: the prolog interchange with the server
-    performConnection(socket_fd);
+    //performConnection(socket_fd);
+    if(!prolog(socket_fd)) {
+      perror("prolog");
+      return EXIT_FAILURE;
+    }
+
+    game(socket_fd);
     //close(socket_fd);
   }else {
     //THINKER

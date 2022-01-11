@@ -7,7 +7,8 @@ char* readConfig(char* name, char *config) {
     char *stringV = NULL;
     const char *delim = "= \n";                                                   
     char string[BUFFERLENGTH];  
-    char *res = calloc(BUFFERLENGTH, sizeof(char)+1);                                         
+    char *res = calloc(BUFFERLENGTH, sizeof(char)+1);
+    char *pointer;                                        
 
     file = fopen(config, "r");                                //open config
 

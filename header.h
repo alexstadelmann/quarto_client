@@ -2,6 +2,7 @@
 #include <stdlib.h>   //for macros like EXIT_SUCCESS
 #include <unistd.h>   //for getopt
 #include <sys/wait.h>
+
 #ifndef header
 #define header
 
@@ -9,6 +10,7 @@
 #include <stdbool.h>  // for true and false
 #include <ctype.h>   //for isdigit and isalphanum
 #include <string.h> //for strcpy
+#include <math.h>
 
 
 //global definitions:
@@ -30,13 +32,26 @@ bool is_valid_id(char *);
 bool is_valid_player_number(char *); 
 bool is_valid_file(char *arg, char *string);
 void print_id(char *, int);
-int recv_all(int, char *, size_t); 
+int recv_all(int, char *, size_t);
+void printField();
+
+
+//Fuction from field.c
+bool recvField(char*);
 
 //declare important variables
   char game_id[ID_LEN + 1];
   char player_number[2];
   char player_name[NAME_LEN + 1];
   char cip_version[VERSION_LEN + 1];
+  //Variables from the game phase:
+int moveTime;
+int field[4][4];
+int width;
+int height;
+int winner;
+char winnerName[126];
+int nextPiece;
 
 
 #endif

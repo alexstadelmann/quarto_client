@@ -24,5 +24,7 @@ int retval;
 void performConnection(int fileSock);               //Zuständig für die Prologphase
 void sendResponse(char *response, int fileSock);    //Sendet Antwort an Server 
 void processInformation(char *buffer, int fileSock);
+bool prolog(int);
+bool game(int);
 
 #endif
