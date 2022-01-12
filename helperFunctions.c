@@ -69,7 +69,7 @@ bool read_line(int socket_fd, char* ptr) {
 void print_board(int n, int board[n][n]) {
   
   printf("\nNext: %d\n", nextPiece);
-  puts("  A B C D ")
+  puts("  A  B  C  D ");
   puts(" ------------");
   for(int i = 3; i >= 0; i--) {
     printf("|");

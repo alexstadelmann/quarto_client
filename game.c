@@ -84,7 +84,6 @@ bool game(int socket_fd) {
 
         if(match(line + 2, "^FIELD ?,?")) {
           sscanf(line + 2, "FIELD %d,%d", &width, &height);
-          printf("width: %d and height %d\n", width, height);
           break;
         } 
 
@@ -94,11 +93,9 @@ bool game(int socket_fd) {
             perror("sending msg to server");
             return false;
           }
-          printf("C: %s\n", msg);
           break;
         }
         if(match(line + 2, "OKTHINK")) {
-          printf("S: %s", line + 2);
           print_board(4, board);
           
           phase = 3;

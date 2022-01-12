@@ -6,8 +6,6 @@
 
 void calculateMove() {
   int fieldOptions = freeFieldsSearch();
-
-  
   
   srand(time(0));
   insertCoordinates(freeFields[rand() % fieldOptions]);
@@ -31,8 +29,9 @@ int freeFieldsSearch() {
 }
 
 void insertCoordinates(int pos) {
-  char column = (char) (pos / width + 65);
-  char row = (char) (pos % height + 49);
+  printf("Coordinate in decimal:%d\n", pos);
+  char column = (char) (pos % width + 65);
+  char row = (char) (pos / height + 49);
   nextCoordinates[0] = column;
   nextCoordinates[1] = row;
 }
