@@ -33,25 +33,40 @@ bool is_valid_player_number(char *);
 bool is_valid_file(char *arg, char *string);
 void print_id(char *, int);
 int recv_all(int, char *, size_t);
-void printField();
+void print_board(int, int [4][4]);
+char* intToBinary(int);
 
 
-//Fuction from field.c
-bool recvField(char*);
+//Fuction from board.c
+bool recv_board(char*);
+
+//Function from thinker.c
+void calculateMove();
+void chooseNextOpponentPiece();
+int freeFieldsSearch();
+void insertCoordinates(int);
+void insertNextMove();
+int freeFieldsSearch();
 
 //declare important variables
   char game_id[ID_LEN + 1];
   char player_number[2];
   char player_name[NAME_LEN + 1];
   char cip_version[VERSION_LEN + 1];
-  //Variables from the game phase:
+
+//Variables from the game phase:
 int moveTime;
-int field[4][4];
+int board[4][4];
 int width;
 int height;
 int winner;
 char winnerName[126];
 int nextPiece;
+int freePieces[16];
+int nextOpponentPiece;
+char nextMove[16];
+int freeFields[16];
+char nextCoordinates[2];
 
 
 #endif

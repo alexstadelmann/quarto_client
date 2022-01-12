@@ -66,7 +66,7 @@ bool read_line(int socket_fd, char* ptr) {
 }
 
 
-void printField(int n, int board[n][n]) {
+void print_board(int n, int board[n][n]) {
   
   printf("\nNext: %d\n", nextPiece);
   puts(" ------------");
@@ -87,7 +87,29 @@ void printField(int n, int board[n][n]) {
   puts(" ------------");
 }
 
-// void print_binary(double num) {
-//   double digits =  log(num);
-//   printf("digits: %f\n", digits);
-// }
+char *intToBinary(int n) {
+    int m = n;
+    int counter = 0;
+    while (n != 0) {
+        counter++;
+        n = n / 2;
+    }
+    //make space for \0 at the end
+    printf("counter size: %d\n", counter);
+
+    char * result = (char *) malloc(counter*sizeof(char));
+    result[counter] = '\0';
+    counter--;
+    while (counter >= 0) {
+        if (m % 2 == 0) {
+            *(result + counter) = '0';
+        }
+        else {
+            *(result + counter) = '1';
+        }
+        m = m / 2;
+        counter--;
+    }
+    result[counter] = '\0';
+    return result;
+}

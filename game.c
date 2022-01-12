@@ -1,38 +1,15 @@
 #include "performConnection.h"
 #include "handleRequest.h"
 #include "prolog.h"
+#include "header.h"
 
-char *intToBinary(int n) {
-    int counter = 0;
-    while (n != 0) {
-        if (n % 2 == 0) {
-            counter = counter + 1;
-        }
-        else {
-            counter = counter + 1;
-        }
-        n = n / 2;
-    }
 
-    char *result[counter];
-    counter = 0;
-
-    while (n != 0) {
-        if (n % 2 == 0) {
-            result[counter] = "0";
-        }
-        else {
-            result[counter] = "1";
-        }
-        n = n / 2;
-    }
-    return *result;
-}
 
 
 bool game(int socket_fd) {
 
   char *line = (char*) malloc(BUFFERLENGTH*sizeof(char));
+  char msg[64];
 
 
   /* Each phase of the game has a number for the switch:
@@ -43,35 +20,44 @@ bool game(int socket_fd) {
   */
   int phase = 0;
 
+  //flag needed for phase 3
+  bool skipReading = false; 
+
   while(true) {
 
-    //receive the next line send by the server
-    if(!read_line(socket_fd, line)) {
-      perror("reading line");
-      return false;
+    if(!skipReading) {
+        //receive the next line send by the server
+      if(!read_line(socket_fd, line)) {
+        perror("reading line");
+        return false;
+      }
+      //check if message is negative
+      if(line[0] == '-') {
+        printf("S: Error! %s\nC: Disconnecting server...\n",line+2);
+        free(line);
+        return false;
+      } 
     }
-    //check if message is negative
-    if(line[0] == '-') {
-      printf("S: Error! %s\nC: Disconnecting server...\n",line+2);
-      free(line);
-      return false;
-    }
-
     switch(phase) {
 
       //default and "Idle"
       case 0:
 
-        if(match(line + 2, "MOVE .+")){
+        if(match(line + 2, "^MOVE .+$")){
           sscanf(line + 2, "MOVE %d", &moveTime);
           phase = 1;
           break;
         }
 
-        if (match(line + 2, "WAIT")) {
-          char msg1[64];
-          strcpy(msg1,"OKWAIT");
-          send(socket_fd, msg1, sizeof(msg1), 0);
+        if (match(line + 2, "^WAIT$")) {
+          printf("S: %s\n", line + 2);
+          strcpy(msg,"OKWAIT\n");
+          if(write(socket_fd, msg, strlen(msg)) == -1) {
+            perror("sending msg to server");
+            return false;
+          }
+          printf("C: OKWAIT\n");
+          
           break;
         } 
 
@@ -92,36 +78,57 @@ bool game(int socket_fd) {
 
         if(match(line + 2, "NEXT .+")) {
           sscanf(line + 2, "NEXT %d", &nextPiece);
-          printf("NextPiece: %d\n", nextPiece);
+          freePieces[nextPiece] = -1;
           break;
         }
 
-        if(match(line + 2, "^FIELD ?,?")) {
+        if(match(line + 2, "^FIELD ?,?$")) {
           sscanf(line + 2, "FIELD %d,%d", &width, &height);
           printf("width: %d and height %d\n", width, height);
           break;
         } 
 
         if(match(line + 2, "^ENDFIELD$")) {
-          char msg2[52];
-          strcpy(msg2, "THINKING\n");
-          if(write(socket_fd, msg2, sizeof(msg2)) == -1) {
+          strcpy(msg, "THINKING\n");
+          if(write(socket_fd, msg, strlen(msg)) == -1) {
             perror("sending msg to server");
             return false;
           }
-          printf("C: %s\n", msg2);
+          printf("C: %s\n", msg);
           break;
         }
         if(match(line + 2, "OKTHINK")) {
-          printf("%s", line + 2);
-          printField(4, field);
+          printf("S: %s", line + 2);
+          print_board(4, board);
           
           phase = 3;
+          skipReading = true;
           break;
         }
-        recvField(line + 2);
+
+        recv_board(line + 2);
         break;
-    
+
+      //Make move:  
+      case 3:
+        if(skipReading) {
+          
+          calculateMove();
+          printf("nextMove: %s\n", nextMove);
+          if(write(socket_fd, nextMove, strlen(nextMove))== -1) {
+            perror("sending msg to server");
+            return false;
+          }
+          printf("My next move is: %s", nextMove);
+          skipReading = false;
+        } else if(match(line + 2, "^MOVEOK$")) {
+          phase = 0;
+          break;
+        } else {
+          perror("unexpected message from server");
+          return false;
+        }
+      
       default:
       break;
     }

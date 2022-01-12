@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra  -g
-SRCFILES = sysprak-client.c helperFunctions.c serverConnection.c performConnection.c handleResponse.c handleRequest.c config.c sharedMemoryFunctions.c prolog.c game.c field.c
+SRCFILES = sysprak-client.c helperFunctions.c serverConnection.c performConnection.c handleResponse.c handleRequest.c config.c sharedMemoryFunctions.c prolog.c game.c board.c thinker.c
 MAIN = sysprak-client
 
 all: $(MAIN) 
