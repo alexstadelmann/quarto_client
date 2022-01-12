@@ -71,7 +71,6 @@ bool game(int socket_fd) {
         perror("unexpected message from server");
         free(line);
         return false;
-        
 
       //"Move"  
       case 1:
@@ -105,6 +104,31 @@ bool game(int socket_fd) {
 
         recv_board(line + 2);
         break;
+
+      //Gameover:
+
+
+
+      case 2:
+        if(match(line + 2, "GAMEOVER .+")) {
+          sscanf(line + 2, "GAMEOVER %d", &winner);           //speicher [[ ((Spielernummer des Gewinners)) ((Spielername des Gewinners))  ]]  --muss noch verarbeitet werden
+          if(match(winner, "")) {                             //Die genaue Ermittlung und ggf. Abspeicherung fehlt hier
+            printf("The game ended in a tie.\n");             
+          }
+          if(match(winner, "")) {                             //Gleiches wie oben. Genaues Ermittel des Gewinners fehlt
+            printf("Congratulation! You have won.\n");
+          }
+          else {
+            printf("Too bad! You have unfortunately lost. Try it again right away.\n");
+          }
+
+
+
+          break;
+        }
+
+
+
 
       //Make move:  
       case 3:
