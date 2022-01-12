@@ -5,7 +5,7 @@
 char nextCoordinates[2];
 int width = 4;
 int height = 4;
-int board[4][4] = {{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1}};
+int board[4][4] = {{4,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1}};
 int freeFields[16];
 
 char *intToBinary(int n) {
@@ -59,10 +59,10 @@ int freeFieldsSearch() {
 int main() {
   
   insertCoordinates(11);
-  printf("first:%c, second: %c", nextCoordinates[0], nextCoordinates[1]);
+  printf("first:%c, second: %c\n", nextCoordinates[0], nextCoordinates[1]);
 
   int haha = freeFieldsSearch();
-  printf("%d", haha);
+  printf("fieldOptions: %d", haha);
 
 
   

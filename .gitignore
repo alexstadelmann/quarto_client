@@ -5,3 +5,4 @@
 *.plist
 *.conf
 sysprak-client
+test.c

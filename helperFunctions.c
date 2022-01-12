@@ -69,8 +69,9 @@ bool read_line(int socket_fd, char* ptr) {
 void print_board(int n, int board[n][n]) {
   
   printf("\nNext: %d\n", nextPiece);
+  puts("  A B C D ")
   puts(" ------------");
-  for(int i = 0; i < n; i++) {
+  for(int i = 3; i >= 0; i--) {
     printf("|");
     for(int j = 0; j < n; j++) {
       if(board[i][j] == -1) {
@@ -85,6 +86,15 @@ void print_board(int n, int board[n][n]) {
     printf("|\n");
   }
   puts(" ------------");
+  puts("Remainig pieces: ");
+  for(int i = 0; i < 16; i++) {
+    if(freePieces[i] == -1) {
+      printf(" * ");
+    } else {
+      printf("%d ", freePieces[i]);
+    }
+  }
+  puts("");
 }
 
 char *intToBinary(int n) {

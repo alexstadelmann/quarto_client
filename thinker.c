@@ -6,23 +6,22 @@
 
 void calculateMove() {
   int fieldOptions = freeFieldsSearch();
+
+  
   
   srand(time(0));
-  int random = rand();
-  printf("fieldOptions: %d\n", fieldOptions);
-  //random = random  fieldOptions;
-  printf("random number%d\n", random);
-  insertCoordinates(rand() % fieldOptions);
-  puts("yuhuu");
+  insertCoordinates(freeFields[rand() % fieldOptions]);
   insertNextMove();
 
 }
 
 int freeFieldsSearch() {
   int count = 0;
-  for(int i = 0; i < height; i++) {
-    for(int j = 0; j < width; j++) {
+  for(int i = 3; i >= 0; i--) {
+    for(int j = 0; j < 4; j++) {
+      
       if(board[i][j] == -1) {
+        
         freeFields[count] = i*4 + j;
         count++;
       }
@@ -42,9 +41,15 @@ void insertNextMove() {
   strcpy(nextMove, "PLAY ");
   strcat(nextMove, nextCoordinates);
   chooseNextOpponentPiece();
-  char next[2];
-  sprintf(next, "%d", nextOpponentPiece);
-  strcat(nextMove, next);
+  char temp[4];
+  if(nextOpponentPiece != -1) {
+    sprintf(temp, ",%d\n", nextOpponentPiece);
+    strcat(nextMove, temp);
+    freePieces[nextOpponentPiece] = -1;
+  } else {
+    strcat(nextMove, "\n");
+  }
+  
 }
 
 void chooseNextOpponentPiece() {

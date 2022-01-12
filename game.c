@@ -82,7 +82,7 @@ bool game(int socket_fd) {
           break;
         }
 
-        if(match(line + 2, "^FIELD ?,?$")) {
+        if(match(line + 2, "^FIELD ?,?")) {
           sscanf(line + 2, "FIELD %d,%d", &width, &height);
           printf("width: %d and height %d\n", width, height);
           break;
@@ -119,7 +119,6 @@ bool game(int socket_fd) {
             perror("sending msg to server");
             return false;
           }
-          printf("My next move is: %s", nextMove);
           skipReading = false;
         } else if(match(line + 2, "^MOVEOK$")) {
           phase = 0;
