@@ -71,13 +71,18 @@ void chooseNextOpponentPiece() {
 
 bool isWinningMove(int piece, int field, int board[42][4]) {
   int res = piece;
+
   for(int k = 0; k < 2; k++) {
+
+    //invert bits for second run
     if(k == 1) res = res^15;
     printf("res: %d\n", res);
-  int column = field % 4;
-  printf("column: %d\n", column);
-  int row = field / 4;
-  printf("row: %d\n", row);
+
+    int column = field % 4;
+    printf("column: %d\n", column);
+
+    int row = field / 4;
+    printf("row: %d\n", row);
 
 
   //vertical line
@@ -87,8 +92,12 @@ bool isWinningMove(int piece, int field, int board[42][4]) {
       res = 0;
       break;
     }
-    res = res & board[i][column];
-    printf("res actualized: %d\n", res);
+    if(k == 0) {
+      res = res & board[i][column];
+    } else {
+      res = res & (board[i][column]^15);
+    }
+    
   }
 
   if(res != 0) {
@@ -104,8 +113,12 @@ bool isWinningMove(int piece, int field, int board[42][4]) {
       res = 0;
       break;
     }
-    res = res & board[row][j];
-    printf("res actualized: %d\n", res);
+    if(k == 0) {
+      res = res & board[row][j];
+    } else {
+      res = res & (board[row][j]^15);
+    }
+    
     
   }
 
@@ -120,12 +133,17 @@ bool isWinningMove(int piece, int field, int board[42][4]) {
     for(int j = 0; j < 4; j++){
       if(i + j == 3) {
         if(i == row && j == column) continue;
+
         if(board[i][j] == -1){
           res = 0;
           break;
         } 
-
-        res = res & board[i][j];
+        if(k == 0) {
+          res = res & board[i][j];
+        } else {
+          res = res & (board[i][j]^15);
+        }
+        
       }
     } 
   }
@@ -144,11 +162,19 @@ bool isWinningMove(int piece, int field, int board[42][4]) {
         if(board[i][j] == -1) {
           res = 0;
           break;
-        } else {
-          res = res & board[i][j];
         }
+        if(k == 0) {
+          res = res & board[i][j];
+        } else {
+          res = res & (board[i][j]^15);
+        }    
       }
     }
+  }
+  if(res != 0) {
+    return true;
+  } else {
+    res = piece;
   }
     
   

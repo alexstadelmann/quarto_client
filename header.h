@@ -1,16 +1,21 @@
-#include <stdio.h>    //for printf and fprintf
-#include <stdlib.h>   //for macros like EXIT_SUCCESS
-#include <unistd.h>   //for getopt
-#include <sys/wait.h>
+
+//standard libraries that everyone needs
+#include <stdio.h>    
+#include <stdlib.h>   
+#include <unistd.h>   
+#include <stdbool.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
 
 #ifndef header
 #define header
 
 
 #include <stdbool.h>  // for true and false
-#include <ctype.h>   //for isdigit and isalphanum
-#include <string.h> //for strcpy
-#include <math.h>
+#include <sys/wait.h>
+
+
 
 
 //global definitions:
