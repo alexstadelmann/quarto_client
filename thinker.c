@@ -76,13 +76,13 @@ bool isWinningMove(int piece, int field, int board[42][4]) {
 
     //invert bits for second run
     if(k == 1) res = res^15;
-    printf("res: %d\n", res);
+    
 
     int column = field % 4;
-    printf("column: %d\n", column);
+    
 
     int row = field / 4;
-    printf("row: %d\n", row);
+    
 
 
   //vertical line

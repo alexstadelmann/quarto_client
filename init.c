@@ -82,7 +82,7 @@ bool get_args(int argc, char **argv) {
 
 } 
 
-bool make_config_file() {
+//bool make_config_file() {
   // //fill struct
   // char *hostValue = readConfig(paramNameHost, confile);
   // memset(confiparam.hostName, '\0', sizeof(confiparam.hostName));
@@ -101,7 +101,7 @@ bool make_config_file() {
   // confiparam.portNumber = atoi(portVal);
  
 
-}
+//}
 
 char* readConfig(char* name, char *config) {
 
