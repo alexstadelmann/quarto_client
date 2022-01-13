@@ -69,10 +69,10 @@ bool read_line(int socket_fd, char* ptr) {
 void print_board(int n, int board[n][n]) {
   
   printf("\nNext: %d\n", nextPiece);
-  puts("  A  B  C  D ");
-  puts(" ------------");
+  puts("    A  B  C  D ");
+  puts("   ------------");
   for(int i = 3; i >= 0; i--) {
-    printf("|");
+    printf("%d |", i + 1);
     for(int j = 0; j < n; j++) {
       if(board[i][j] == -1) {
         printf(" * ");
@@ -85,7 +85,7 @@ void print_board(int n, int board[n][n]) {
     }
     printf("|\n");
   }
-  puts(" ------------");
+  puts("   ------------");
   puts("Remainig pieces: ");
   for(int i = 0; i < 16; i++) {
     if(freePieces[i] == -1) {
@@ -122,4 +122,15 @@ char *intToBinary(int n) {
     }
     result[counter] = '\0';
     return result;
+}
+
+void print_cube() {
+  for(int i = 0; i < 4;i++) {
+    printf("|");
+    for(int j = 0; j < 4; j++) {
+      printf("%s ", cube[i][j]);
+    } 
+    puts("");
+  }
+  puts("|");
 }

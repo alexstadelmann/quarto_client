@@ -29,14 +29,16 @@
 //Variables from the game phase:
 int moveTime;
 int board[4][4];
+char cube[4][4][5];
 int winner;
 char winnerName[126];
 int nextPiece;
+int nextField;
 int nextOpponentPiece;
 int freePieces[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 char nextMove[16];
 char nextCoordinates[2];
-int freeFields[16] = {0,1,2,3,4,5,6,7,8,9,11,12,13,14,15};
+int freeFields[16];
 int height;
 int width;
 
@@ -169,52 +171,45 @@ int main(int argc, char **argv)
   confiparam.portNumber = atoi(portVal);
  
 
-//  int socket_fd;
-//  if ((socket_fd = connectServer()) == -1){
-//     perror("connection");
-//   }
-  
-//   //Attachen der SHM Bereiche
-//     serverinfo = attachingSHM(shmID_serverInfo);
-//     shmIDplayer = attachingSHM(shmID_player);
 
-
-//   if(!prolog(socket_fd)) {
-//       perror("prolog");
-//       return EXIT_FAILURE;
-//     }
-//     //game phase
-//     game(socket_fd);
-    //close(socket_fd);
 
  if((pid=fork())<0){
    perror("Error splitting the process");
-   exit(EXIT_FAILURE);
+   exit(1);
 
+  //CONNECTOR (child process)
   }else if(pid == 0){
-    //CONNECTOR
+    
+
     //Aufruf Hilfsfunktion zum Löschen der Segmente
     atexit(handleExit);
+
     //connect to the MNM Server
     int socket_fd;
     if ((socket_fd = connectServer()) == -1){
       perror("connection");
+      return -1;
     }
+
     //Attachen der SHM Bereiche
     serverinfo = attachingSHM(shmID_serverInfo);
     shmIDplayer = attachingSHM(shmID_player);
 
     //prolog phase
-    //performConnection(socket_fd);
     if(!prolog(socket_fd)) {
       perror("prolog");
       return EXIT_FAILURE;
     }
+
+
     //game phase
     game(socket_fd);
-    //close(socket_fd);
+    close(socket_fd);
+
+  
   }else {
-    //THINKER
+    //THINKER(parent process)
+    //pid, which is fork's return value, is now the child's process-id.
 
     //SHM Segmente im Thinker attachen
     serverinfo = attachingSHM(shmID_serverInfo);
@@ -224,7 +219,7 @@ int main(int argc, char **argv)
     serverinfo->connector= pid;
 
     
-
+    //kill the zombie process 
     if(waitpid(pid,  NULL, 0) != pid){
       perror("Error while waiting for childprocess");
       exit(EXIT_FAILURE);

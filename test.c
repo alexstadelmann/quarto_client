@@ -1,11 +1,21 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <string.h>
 
 char nextCoordinates[2];
 int width = 4;
 int height = 4;
-int board[4][4] = {{4,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1}};
+int board[4][4] = {{4,11,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,4,-1}};
+char cube[4][4][5];
+char test[10][4];
+char test2[2][10][4];
+
+
+
 int freeFields[16];
 
 char *intToBinary(int n) {
@@ -15,8 +25,6 @@ char *intToBinary(int n) {
         counter++;
         n = n / 2;
     }
-    //make space for \0 at the end
-    printf("counter size: %d\n", counter);
 
     char * result = (char *) malloc(counter*sizeof(char));
     result[counter] = '\0';
@@ -55,14 +63,80 @@ int freeFieldsSearch() {
   return count;
 }
 
+void makeBinaryCube() {
+  for(int i = 0; i < 4; i++) {
+    for(int j = 0; j < 4; j++) {
+      if(board[i][j] != -1) {
+        char *bin = intToBinary(board[i][j]);
+        strcpy(cube[i][j], bin);
+        free(bin);
+      }
+      
+    }
+  } 
+}
+
+// void isWinningMove(int piece, int field, int board[42][4]) {
+// //   int res = piece;
+// //   int column = field % 4;
+// //   int row = field / 4;
+
+
+// //   //vertical line
+// //   for(int i = 0; i < 4; i++) {
+// //     if(i == row) continue;
+// //     if(board[i][column] != -1) res = res & board[i][column];
+// //   }
+
+// //   if(res != 0) {
+// //     return true;
+// //   } else {
+// //     res = piece;
+// //   }
+
+//   //horizontal line
+//   for(int j = 0; j < 4; j++) {
+//     if(j == column) continue;
+
+//     if(board[row][j] != -1) res = res & board[row][j];
+    
+//   }
+
+//   if(res != 0) {
+//     return true;
+//   } else {
+//     res = piece;
+//   }
+
+// //   //diagonal from upper left corner to lower right corner
+// //   for(int i = 0; i < 4; i++){
+// //     for(int j = 0; j < 4; j++){
+// //       if(i + j == 3) {
+// //         if(i == row && j == column) continue;
+
+// //         if(board[i][j] != -1) res = res & board[i][j];
+// //       }
+// //     } 
+// //   }
+
+// //   if(res != 0) {
+// //     return true;
+// //   } else {
+// //     res = piece;
+// //   }
+
+// //   //diagonal line from upper right corner to lower left corner
+// //   //TO DO
+    
+  
+//   return false;
+
+
+// }
 
 int main() {
-  
-  insertCoordinates(11);
-  printf("first:%c, second: %c\n", nextCoordinates[0], nextCoordinates[1]);
-
-  int haha = freeFieldsSearch();
-  printf("fieldOptions: %d", haha);
+ int test = 0 & (-1);
+ printf("%d", test);
 
 
   

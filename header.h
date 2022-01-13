@@ -35,10 +35,12 @@ void print_id(char *, int);
 int recv_all(int, char *, size_t);
 void print_board(int, int [4][4]);
 char* intToBinary(int);
+void print_cube();
 
 
 //Fuction from board.c
 bool recv_board(char*);
+void makeBinaryCube();
 
 //Function from thinker.c
 void calculateMove();
@@ -47,6 +49,7 @@ int freeFieldsSearch();
 void insertCoordinates(int);
 void insertNextMove();
 int freeFieldsSearch();
+bool isWinningMove(int, int, int [42][4]);
 
 //declare important variables
   char game_id[ID_LEN + 1];
@@ -57,6 +60,7 @@ int freeFieldsSearch();
 //Variables from the game phase:
 int moveTime;
 int board[4][4];
+char cube[4][4][5];
 int width;
 int height;
 int winner;
@@ -66,6 +70,7 @@ int freePieces[16];
 int nextOpponentPiece;
 char nextMove[16];
 int freeFields[16];
+int nextField;
 char nextCoordinates[2];
 
 

@@ -17,3 +17,18 @@ bool recv_board(char *line) {
   
   return true;
 }
+//This function does not work yet !
+void makeBinaryCube() {
+  for(int i = 3; i >=0; i++) {
+    for(int j = 0; j < 4; j++) {
+      if(board[i][j] != -1) {
+        char *bin = intToBinary(board[i][j]);
+        strcpy(cube[i][j], bin);
+        free(bin);
+      } else {
+        strcpy(cube[i][j], "* ");
+      }
+      
+    }
+  } 
+}
