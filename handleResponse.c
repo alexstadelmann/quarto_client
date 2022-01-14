@@ -212,10 +212,10 @@ char *handle(char *request){
           char *status = substring(request, strlen(request)-1,strlen(request) );
 
           int playNum1=atoi(playNum)+1;
-          char playNumC=playNum1+'0';
-          char *point=&playNumC;
+          char *point=malloc(sizeof(char)+1);
+          sprintf(point, "%d", playNum1);
           
-          serverinfo->restPlayers[countPlayer]->playerNumber = atoi(playNum);
+          serverinfo->restPlayers[countPlayer]->playerNumber = playNum1;
           serverinfo->restPlayers[countPlayer]->ready = atoi(status);
           strcpy(serverinfo->restPlayers[countPlayer]->playerName, playName);
           
@@ -240,6 +240,9 @@ char *handle(char *request){
           }
           if (status != NULL){
             free(status);
+          }
+          if (point != NULL){
+            free(point);
           }
 
          countPlayer++;
