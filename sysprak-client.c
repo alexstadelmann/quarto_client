@@ -21,21 +21,21 @@
 
   struct serverinfo *serverinfo;
 
-//Variables from the game phase:
-int moveTime;
-int board[4][4];
-char cube[4][4][5];
-int winner;
-char winnerName[126];
-int nextPiece;
-int nextField;
-int nextOpponentPiece;
-int freePieces[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-char nextMove[16];
-char nextCoordinates[2];
-int freeFields[16];
-int height;
-int width;
+// //Variables from the game phase:
+// int moveTime;
+// int board[4][4];
+// char cube[4][4][5];
+// int winner;
+// char winnerName[126];
+// int nextPiece;
+// int nextField;
+// int nextOpponentPiece;
+// int freePieces[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+// char nextMove[16];
+// char nextCoordinates[2];
+// int freeFields[16];
+// int height;
+// int width;
 
 //Hilfsfunktion zum Löschen der SHM Segmente beim Terminieren
 static void handleExit(void){
@@ -103,21 +103,19 @@ int main(int argc, char **argv)
     serverinfo = attachingSHM(shmID_serverInfo);
     shmIDplayer = attachingSHM(shmID_player);
 
-    //prolog phase beginns
+    //prolog phase
     if(!prolog(socket_fd)) return 1;
 
-    //prolog phase
+    //game phase 
     if(!game(socket_fd)) return 1;
-    //game phase
-    game(socket_fd);
-
+    
 
     close(socket_fd);
 
   
   }else {
     //THINKER(parent process)
-    //pid, which is fork's return value, is now the child's process-id.
+    //pid, which is fork()'s return value, is now the child's process-id.
 
     //SHM Segmente im Thinker attachen
     serverinfo = attachingSHM(shmID_serverInfo);

@@ -31,7 +31,6 @@ int freeFieldsSearch() {
 }
 
 void insertCoordinates(int pos) {
-  printf("Coordinate in decimal:%d\n", pos);
   char column = (char) (pos % width + 65);
   char row = (char) (pos / height + 49);
   nextCoordinates[0] = column;
@@ -44,9 +43,6 @@ void insertNextMove() {
   chooseNextOpponentPiece();
   char temp[4];
   bool winningMove = is_winning_move(nextPiece, nextField, board);
-  if(winningMove) {
-    puts("Yuhuuu");
-  }
   if(nextOpponentPiece != -1 && !winningMove) {
     sprintf(temp, ",%d\n", nextOpponentPiece);
     strcat(nextMove, temp);
@@ -69,7 +65,7 @@ void chooseNextOpponentPiece() {
   }
 }
 
-/*is_winning_move() first uses "bitwise and" to check if four pieces in a line
+/*is_winning_move() uses "bitwise and" to check if four pieces in a line
 have a quality in common stored as a "1" in the binary representation of the piece.
 The lines can be horizonal, vertical or diagonal.
 If four pieces in a line do not share quality stored as "1", then the result
@@ -99,6 +95,8 @@ bool is_winning_move(int piece, int field, int board[42][4]) {
   return is_winning_move_helper(piece, field, board);
 
 }
+
+//helper function 
 bool is_winning_move_helper(int piece, int field, int board[42][4]) {
     int res = piece;
     int column = field % 4;

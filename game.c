@@ -3,6 +3,22 @@
 #include "prolog.h"
 #include "header.h"
 
+//Variables from the game phase:
+int moveTime;
+int board[4][4];
+char cube[4][4][5];
+bool player0won = false;
+bool player1won = false;
+char winnerName[126];
+int nextPiece;
+int nextField;
+int nextOpponentPiece;
+int freePieces[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+char nextMove[16];
+char nextCoordinates[2];
+int freeFields[16];
+int height;
+int width;
 
 
 
@@ -10,27 +26,29 @@ bool game(int socket_fd) {
 
   char *line = (char*) malloc(BUFFERLENGTH*sizeof(char));
   char msg[64];
-
+  
 
   /* Each phase of the game has a number for the switch:
   default (and "Idle") -> 0
-  "Move" -> 1
+  "Move" -> 1 (name from script is somewhat misleading as we actually receive the board)
   "Game Over" -> 2
-  "Choose Move" -> 3
+  "Make move" -> 3
   */
   int phase = 0;
 
-  //flag needed for phase 3
+  //flag needed for phase 3()
   bool skipReading = false; 
 
   while(true) {
-
+    
     if(!skipReading) {
-        //receive the next line send by the server
+
+      //receive the next line send by the server
       if(!read_line(socket_fd, line)) {
         perror("reading line");
         return false;
       }
+
       //check if message is negative
       if(line[0] == '-') {
         printf("S: Error! %s\nC: Disconnecting server...\n",line+2);
@@ -38,32 +56,35 @@ bool game(int socket_fd) {
         return false;
       } 
     }
+
     switch(phase) {
 
       //default and "Idle"
       case 0:
 
-        if(match(line + 2, "^MOVE .+$")){
+        if(match(line + 2, "^MOVE .+$")) {
+
           sscanf(line + 2, "MOVE %d", &moveTime);
           phase = 1;
           break;
         }
 
-        if (match(line + 2, "^WAIT$")) {
+        if(match(line + 2, "^WAIT$")) {
+
           printf("S: %s\n", line + 2);
           strcpy(msg,"OKWAIT\n");
+
           if(write(socket_fd, msg, strlen(msg)) == -1) {
             perror("sending msg to server");
             return false;
           }
+
           printf("C: OKWAIT\n");
-          
           break;
         } 
 
-        if(match(line + 2, "GAMEOVER ? ?" )) {
-          //AUFGABE: Gewinnerdaten aus line extrahieren und speichern
-          phase = 3;
+        if(match(line + 2, "^GAMEOVER$")) {
+          phase = 2;
           break;
         }
 
@@ -96,9 +117,6 @@ bool game(int socket_fd) {
         }
         if(match(line + 2, "OKTHINK")) {
           print_board(4, board);
-          // makeBinaryCube();
-          // puts("");
-          // print_cube();
           
           phase = 3;
           skipReading = true;
@@ -109,29 +127,45 @@ bool game(int socket_fd) {
         break;
 
       //Gameover:
+      case 2:
 
+        if(match(line + 2, "^PLAYER0WON .+$")) {
+          
+          if(strcmp(line + 2, "PLAYER0WON Yes") == 0) {
+            player0won = true;
+          }
+          break;
+        }
 
+        if(match(line + 2, "^PLAYER0W1N .+$")) {
+          
+          if(strcmp(line + 2, "PLAYER1WON Yes") == 0) {
+            player1won = true;
+          }
+          break;
+        }
 
-      // case 2:
-      //   if(match(line + 2, "GAMEOVER .+")) {
-      //     sscanf(line + 2, "GAMEOVER %d", &winner);           //speicher [[ ((Spielernummer des Gewinners)) ((Spielername des Gewinners))  ]]  --muss noch verarbeitet werden
-      //     if(match(winner, "")) {                             //Die genaue Ermittlung und ggf. Abspeicherung fehlt hier
-      //       printf("The game ended in a tie.\n");             
-      //     }
-      //     if(match(winner, "")) {                             //Gleiches wie oben. Genaues Ermittel des Gewinners fehlt
-      //       printf("Congratulation! You have won.\n");
-      //     }
-      //     else {
-      //       printf("Too bad! You have unfortunately lost. Try it again right away.\n");
-      //     }
+        if(match(line + 2, "^QUIT$")) {
+          
+          puts("\n ---------------------------");
+          if(player0won) { 
+            printf("| Player 1 has won the game |\n");
+          } else if (player1won) {
+            printf("| Player 2 has won the game |\n");
+          } else {
+            printf("| Its a tie                 |\n");
+          }
+          puts(" ---------------------------");
+          return true;
+        }
 
+        if(match(line + 2, "^FIELD ?,?")) {
+          sscanf(line + 2, "FIELD %d,%d", &width, &height);
+          break;
+        } 
 
-
-      //     break;
-      //   }
-
-
-
+        recv_board(line + 2);
+        break;
 
       //Make move:  
       case 3:
@@ -139,14 +173,17 @@ bool game(int socket_fd) {
           
           calculateMove();
           printf("nextMove: %s\n", nextMove);
+
           if(write(socket_fd, nextMove, strlen(nextMove))== -1) {
             perror("sending msg to server");
             return false;
           }
+
           skipReading = false;
         } else if(match(line + 2, "^MOVEOK$")) {
           phase = 0;
           break;
+
         } else {
           perror("unexpected message from server");
           return false;
