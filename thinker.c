@@ -1,28 +1,30 @@
 #include "header.h"
-#include "performConnection.h"
 #include "thinker.h"
-#include <time.h>
-#include <stdlib.h>
+
+
 
 
 void calculateMove() {
-  int fieldOptions = freeFieldsSearch();
+  int square_options = free_squares_search(free_squares);
   
   srand(time(0));
-  nextField = freeFields[rand() % fieldOptions];
-  insertCoordinates(nextField);
-  insertNextMove();
+  nextSquare = free_squares[rand() % square_options];
+  convert_coordinates(nextSquare, nextCoordinates);
+  insertNextMove(nextCoordinates, nextMove);
 
 }
 
-int freeFieldsSearch() {
+/*Update the free_squares array so that it contains all the empty fields.
+It returns the number of empty fields, i.e. the length of the array.
+*/
+int free_squares_search(int free_squares[]) {
   int count = 0;
   for(int i = 3; i >= 0; i--) {
     for(int j = 0; j < 4; j++) {
       
       if(board[i][j] == -1) {
         
-        freeFields[count] = i*4 + j;
+        free_squares[count] = i*4 + j;
         count++;
       }
     }
@@ -30,19 +32,22 @@ int freeFieldsSearch() {
   return count;
 }
 
-void insertCoordinates(int pos) {
+//translates the standard coordinates (0 to 15) to coordinates like "A4";
+void convert_coordinates(int pos, char next_coordinates[]) {
+
   char column = (char) (pos % width + 65);
   char row = (char) (pos / height + 49);
-  nextCoordinates[0] = column;
-  nextCoordinates[1] = row;
+  next_coordinates[0] = column;
+  next_coordinates[1] = row;
 }
 
-void insertNextMove() {
-  strcpy(nextMove, "PLAY ");
-  strcat(nextMove, nextCoordinates);
+//create the message that the client sends the server, e.g  "PLAY B2,7"
+void insertNextMove(char next_coordinates[], char next_move[]) {
+  strcpy(next_move, "PLAY ");
+  strcat(next_move, next_coordinates);
   chooseNextOpponentPiece();
   char temp[4];
-  bool winningMove = is_winning_move(nextPiece, nextField, board);
+  bool winningMove = is_winning_move(nextPiece, nextSquare, board);
   if(nextOpponentPiece != -1 && !winningMove) {
     sprintf(temp, ",%d\n", nextOpponentPiece);
     strcat(nextMove, temp);
@@ -75,9 +80,9 @@ Also we have to check qualities stored as "0" in binary.
 For that purpose we invert the binaries(the piece and the board)
 and proceed like before.
 */
-bool is_winning_move(int piece, int field, int board[42][4]) {
+bool is_winning_move(int piece, int Square, int board[42][4]) {
   //check for common qualities stored as "1"s
-  if(is_winning_move_helper(piece, field, board)) return true;
+  if(is_winning_move_helper(piece, Square, board)) return true;
 
   //invert binaries to check for common qualities stored as "0"s
   piece ^= 15;
@@ -92,23 +97,23 @@ bool is_winning_move(int piece, int field, int board[42][4]) {
   }
 
   //call helper function with inverted binaries
-  return is_winning_move_helper(piece, field, board);
+  return is_winning_move_helper(piece, Square, board);
 
 }
 
 //helper function 
-bool is_winning_move_helper(int piece, int field, int board[42][4]) {
+bool is_winning_move_helper(int piece, int Square, int board[42][4]) {
     int res = piece;
-    int column = field % 4;
-    int row = field / 4;
+    int column = Square % 4;
+    int row = Square / 4;
   
   //check vertical lines
   for(int i = 0; i < 4; i++) {
 
-    //skip the field where we want to position the piece
+    //skip the Square where we want to position the piece
     if(i == row) continue;
 
-    //if a field is empty, then we know its not a winning move
+    //if a Square is empty, then we know its not a winning move
     if(board[i][column] == -1) {
       res = 0;
       break;
@@ -152,7 +157,7 @@ bool is_winning_move_helper(int piece, int field, int board[42][4]) {
   for(int i = 0; i < 4; i++){
     for(int j = 0; j < 4; j++){
       
-      //the sum of the indexes of the fields on this diagonal equals three
+      //the sum of the indexes of the Squares on this diagonal equals three
       if(i + j == 3) {
         if(i == row && j == column) continue;
 

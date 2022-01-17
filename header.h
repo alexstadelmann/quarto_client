@@ -1,5 +1,5 @@
 
-//standard libraries that everyone needs
+//standard libraries that anyone could need
 #include <stdio.h>    
 #include <stdlib.h>   
 #include <unistd.h>   
@@ -7,12 +7,11 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include <time.h>
 
 #ifndef header
 #define header
 
-
-#include <stdbool.h>  // for true and false
 #include <sys/wait.h>
 
 
@@ -47,14 +46,7 @@ void print_cube();
 bool recv_board(char*);
 void makeBinaryCube();
 
-//Function from thinker.c
-void calculateMove();
-void chooseNextOpponentPiece();
-int freeFieldsSearch();
-void insertCoordinates(int);
-void insertNextMove();
-int freeFieldsSearch();
-bool isWinningMove(int, int, int [42][4]);
+
 
 //declare important variables
   char game_id[ID_LEN + 1];
@@ -74,8 +66,8 @@ int nextPiece;
 int freePieces[16];
 int nextOpponentPiece;
 char nextMove[16];
-int freeFields[16];
-int nextField;
+int freeSquares[16];
+int nextSquare;
 char nextCoordinates[2];
 
 

@@ -21,21 +21,6 @@
 
   struct serverinfo *serverinfo;
 
-// //Variables from the game phase:
-// int moveTime;
-// int board[4][4];
-// char cube[4][4][5];
-// int winner;
-// char winnerName[126];
-// int nextPiece;
-// int nextField;
-// int nextOpponentPiece;
-// int freePieces[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-// char nextMove[16];
-// char nextCoordinates[2];
-// int freeFields[16];
-// int height;
-// int width;
 
 //Hilfsfunktion zum Löschen der SHM Segmente beim Terminieren
 static void handleExit(void){
@@ -58,14 +43,17 @@ void attachPlayers(int sig){
 }
 
 
-/*How-To-Use: call ./sysprak-client with two obligatory parameters: 
--g <GAME_ID>  and two optional parameters: -p <PLAYER_NUMBER>
+/*
+How To Use: call ./sysprak-client with two parameters: -g <GAME_ID> 
+Additionally you may add:  -p <PLAYER_NUMBER> or -c <config_file>
 */
 int main(int argc, char **argv)
 {
-  //create SHM Segments
+  //create SHM Segments (they must be created before fork() is called)
   shmID_player = creatingSHM(BUFFERLENGTH*sizeof(int)); //vllt auch stattdessen sizeof(struct player)
   shmID_serverInfo = creatingSHM(sizeof(struct serverinfo)); 
+  
+
   //signal for players
   signal(SIGUSR2, attachPlayers); 
 

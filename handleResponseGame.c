@@ -42,7 +42,7 @@ char *handleGame(char *request){
       
       case 10:           //Server hat Move geschickt
         //server schickt das Spielfeld, so lange warten
-        while(!match(request, "ENDFIELD")){
+        while(!match(request, "ENDSquare")){
           //Dauerschleife bis Schlüsselwort kommt
         }
         

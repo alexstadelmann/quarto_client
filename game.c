@@ -2,21 +2,23 @@
 #include "handleRequest.h"
 #include "prolog.h"
 #include "header.h"
+#include "handleResponse.h"
+#include <unistd.h>
+#include "thinker.h"
 
 //Variables from the game phase:
 int moveTime;
 int board[4][4];
-char cube[4][4][5];
 bool player0won = false;
 bool player1won = false;
 char winnerName[126];
 int nextPiece;
-int nextField;
+int nextSquare;
 int nextOpponentPiece;
 int freePieces[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 char nextMove[16];
 char nextCoordinates[2];
-int freeFields[16];
+int free_squares[16];
 int height;
 int width;
 
@@ -195,4 +197,22 @@ bool game(int socket_fd) {
 
     
   }
+}
+
+
+bool recv_board(char *line) {
+  int temp = atoi(&line[0]) - 1;
+  char array[4][16];
+  sscanf(line + 2, "%s %s %s %s", &array[0][0], &array[1][0], &array[2][0], &array[3][0]);
+  for(int j = 0; j < 4; j++) {
+    if(array[j][0] == '*') {
+      board[temp][j] = -1;
+    } else {
+      int temp2 = atoi(&array[j][0]);
+      board[temp][j] = temp2;
+      freePieces[temp2] = -1;
+    }
+  }
+  
+  return true;
 }
