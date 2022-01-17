@@ -104,7 +104,9 @@ bool isWinningMove(int piece, int field, int board[42][4]) {
     return true;
   } else {
     res = piece;
+    if(k == 1) res = res^15;
   }
+
 
   //horizontal line
   for(int j = 0; j < 4; j++) {
@@ -126,6 +128,7 @@ bool isWinningMove(int piece, int field, int board[42][4]) {
     return true;
   } else {
     res = piece;
+    if(k == 1) res = res^15;
   }
 
   //diagonal from upper left corner to lower right corner
@@ -152,6 +155,7 @@ bool isWinningMove(int piece, int field, int board[42][4]) {
     return true;
   } else {
     res = piece;
+    if(k == 1) res = res^15;
   }
 
   //diagonal line from upper right corner to lower left corner
@@ -175,6 +179,7 @@ bool isWinningMove(int piece, int field, int board[42][4]) {
     return true;
   } else {
     res = piece;
+    if(k == 1) res = res^15;
   }
     
   
