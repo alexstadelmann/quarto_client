@@ -19,6 +19,7 @@ struct serverinfo{
     struct player *restPlayers[BUFFERLENGTH];
     pid_t connector;
     pid_t thinker;
+    int shm_identifier; //not actually a serverinfo but helpful to communicate between processes
 };
 
 struct player{
@@ -26,6 +27,7 @@ struct player{
     char playerName[BUFFERLENGTH];
     int ready;
 };
+
 
 //functions
 int creatingSHM(size_t size);

@@ -2,6 +2,7 @@
 #include "init.h"
 #include "connect.h"
 #include "prolog.h"
+#include "game.h"
 
   char portVal[BUFFERLENGTH_PORT];
   char *paramNameHost = "hostname";
@@ -17,9 +18,14 @@
   //Variables for SHM Segments
   int shmID_serverInfo;
   int shmID_player;
+  int shmID_board = -1;
+  int* shm_board_address;
   int *shmIDplayer;  //hier einmal als Pointer definiert damit die Variable zum attachen benutzt werden kann
 
   struct serverinfo *serverinfo;
+  
+  //variable for pipe
+  int pfds[2];
 
 
 //Hilfsfunktion zum Löschen der SHM Segmente beim Terminieren
@@ -52,6 +58,7 @@ int main(int argc, char **argv)
   //create SHM Segments (they must be created before fork() is called)
   shmID_player = creatingSHM(BUFFERLENGTH*sizeof(int)); //vllt auch stattdessen sizeof(struct player)
   shmID_serverInfo = creatingSHM(sizeof(struct serverinfo)); 
+
   
 
   //signal for players
@@ -67,6 +74,8 @@ int main(int argc, char **argv)
  //if(!make_config_file()) return 1;
 
   
+
+  pipe(pfds);
 
 
  if((pid=fork())<0){
@@ -111,8 +120,7 @@ int main(int argc, char **argv)
     //Speichern der PID im Struct
     serverinfo->thinker =getpid();
     serverinfo->connector= pid;
-
-    
+    signal(SIGUSR1, thinker);
     //kill the zombie process 
     if(waitpid(pid,  NULL, 0) != pid){
       perror("Error while waiting for childprocess");
@@ -123,6 +131,34 @@ int main(int argc, char **argv)
   }
 
  return EXIT_SUCCESS;
+}
+
+void thinker() {
+
+  //if not connected to the board shared memory, then connect now
+  if(shmID_board == -1) {
+    shmID_board = serverinfo->shm_identifier;
+    shm_board_address = attachingSHM(shmID_board);
+  }
+  
+  height = shm_board_address[0];
+  width = shm_board_address[1];
+  nextPiece = shm_board_address[2];
+
+  //remove nextPiece from list of available pieces to choose from for the opponent
+  freePieces[nextPiece] = -1;
+  
+  //update board by copying it from the 
+  for(int i = 0; i < height; i++) {
+    for(int j = 0; j < width; j++) {
+      board[i][j] = shm_board_address[4*i + j + 3];
+    } 
+  }
+  
+  print_board(height,width, board);
+  calculateMove();
+  write(pfds[1], nextMove, 16);
+  
 }
   
   

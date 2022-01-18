@@ -8,6 +8,7 @@
 #include <math.h>
 #include <ctype.h>
 #include <time.h>
+#include <signal.h>
 
 #ifndef header
 #define header
@@ -30,6 +31,8 @@
 #define NAME_LEN 64
 
 
+void thinker();
+
 //The following functions are defined in helperFunctions.c
 void print_instructions(); 
 bool is_valid_id(char *); 
@@ -37,15 +40,21 @@ bool is_valid_player_number(char *);
 bool is_valid_file(char *arg, char *string);
 void print_id(char *, int);
 int recv_all(int, char *, size_t);
-void print_board(int, int [4][4]);
+void print_board(int, int, int[4][4]);
 char* intToBinary(int);
 void print_cube();
+
+//Variable for pipe
+int pfds[2];
 
 
 //Fuction from board.c
 bool recv_board(char*);
 void makeBinaryCube();
 
+//variables for shared memory
+int shmID_board;
+int* shm_board_address;
 
 
 //declare important variables

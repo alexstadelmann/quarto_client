@@ -66,14 +66,14 @@ bool read_line(int socket_fd, char* ptr) {
 }
 
 
-void print_board(int n, int board[n][n]) {
+void print_board(int height, int width, int board[height][width]) {
   
   printf("\nNext: %d\n", nextPiece);
   puts("    A  B  C  D ");
   puts("   ------------");
-  for(int i = 3; i >= 0; i--) {
+  for(int i = height - 1; i >= 0; i--) {
     printf("%d |", i + 1);
-    for(int j = 0; j < n; j++) {
+    for(int j = 0; j < width; j++) {
       if(board[i][j] == -1) {
         printf(" * ");
       } else if(board[i][j] < 10) {

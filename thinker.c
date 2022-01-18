@@ -2,14 +2,34 @@
 #include "thinker.h"
 
 
+int free_pieces_search(int free_pieces[]) {
+  int count = 0;
+  for(int i = 0; i < 15; i++) {
+    for(int j = 0; j < 4; j++) {
+      for(int k = 0; k < 4; k++) {
+
+        if(i == board[j][k]) {
+          free_pieces[count] = -1;
+        }
+        count++;
+      }
+    }
+    
+  }
+  return count;
+}
 
 
 void calculateMove() {
   int square_options = free_squares_search(free_squares);
+  free_pieces_search(freePieces);
   
   srand(time(0));
   nextSquare = free_squares[rand() % square_options];
   convert_coordinates(nextSquare, nextCoordinates);
+
+
+  //nextOpponentPiece = free_pieces[rand() % piece_options];
   insertNextMove(nextCoordinates, nextMove);
 
 }
@@ -65,6 +85,7 @@ void chooseNextOpponentPiece() {
   }
   if(cursor <= 15) {
     nextOpponentPiece = cursor;
+    freePieces[nextOpponentPiece] = -1;
   } else {
     nextOpponentPiece = -1;
   }

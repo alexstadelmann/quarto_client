@@ -101,7 +101,6 @@ bool game(int socket_fd) {
 
         if(match(line + 2, "NEXT .+")) {
           sscanf(line + 2, "NEXT %d", &nextPiece);
-          freePieces[nextPiece] = -1;
           break;
         }
 
@@ -116,11 +115,48 @@ bool game(int socket_fd) {
             perror("sending msg to server");
             return false;
           }
+            //the first time we receive the FIELD width and height we create a shared memory segment
+          if(shmID_board == -1) {
+
+          
+            /*
+            board segment consists of one int height, one int width, one int nextPiece
+            and a matrix int board[height][width], i.e.
+
+            _____________________________________________________________________________________
+            | height | width | nextPiece | board[0][0] | board[0][1] |...| board[height][width] |
+            ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+            */ 
+            shmID_board = creatingSHM((width*height + 3)*sizeof(int));
+
+            //copy the segment ID into the shared memory that already exists
+            serverinfo->shm_identifier = shmID_board;
+
+            //attach process to segment
+            shm_board_address = attachingSHM(shmID_board);
+
+          }
+          shm_board_address[0] = height;
+          shm_board_address[1] = width;
+          shm_board_address[2] = nextPiece;
+          //store board in shared memory
+          for(int i = 0; i < height; i++) {
+            for(int j = 0; j < width; j++) {
+        
+              shm_board_address[4*i + j + 3] = board[i][j];
+            }
+          }
+
+          kill(serverinfo->thinker, SIGUSR1);
           break;
         }
         if(match(line + 2, "OKTHINK")) {
-          print_board(4, board);
+          //print_board(4, board);
+
+          //get response from Thinker. Now its just a test message but later its going to be the nextNove
           
+          read(pfds[0], nextMove, 16);
+          printf("message from thinker: %s\n", nextMove);
           phase = 3;
           skipReading = true;
           break;
@@ -169,6 +205,31 @@ bool game(int socket_fd) {
         } 
 
         if(match(line + 2, "^ENDFIELD$")) {
+
+            //create a shared memory the first time we receive the FIELD message
+          if(shmID_board == -1) {
+
+            //segment consists of one int height, one int width, one int nextPiece and a matrix int board[height][width] 
+            shmID_board = creatingSHM((width*height + 3)*sizeof(int));
+
+            //copy the segment ID into the shared memory that already exists
+            serverinfo->shm_identifier = shmID_board;
+
+            //attach process to segment
+            shm_board_address = attachingSHM(shmID_board);
+
+          }
+          shm_board_address[0] = height;
+          shm_board_address[1] = width;
+          shm_board_address[2] = nextSquare;
+          //store board in shared memory
+          for(int i = 0; i < height; i++) {
+            for(int j = 0; j < width; j++) {
+        
+              shm_board_address[4*i + j + 3] = board[i][j];
+            }
+          }
+          print_board(height, width, board);
           break;
         }
 
@@ -179,7 +240,7 @@ bool game(int socket_fd) {
       case 3:
         if(skipReading) {
           
-          calculateMove();
+          
           printf("nextMove: %s\n", nextMove);
 
           if(write(socket_fd, nextMove, strlen(nextMove))== -1) {
