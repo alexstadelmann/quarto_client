@@ -51,6 +51,7 @@ bool game(int socket_fd) {
         return false;
       }
 
+
       //check if message is negative
       if(line[0] == '-') {
         printf("S: Error! %s\nC: Disconnecting server...\n",line+2);
@@ -131,7 +132,7 @@ bool game(int socket_fd) {
       //Gameover:
       case 2:
 
-        if(match(line + 2, "^PLAYER0WON .+$")) {
+        if(match(line + 2, "^PLAYER0WON .+")) {
           
           if(strcmp(line + 2, "PLAYER0WON Yes") == 0) {
             player0won = true;
@@ -139,7 +140,7 @@ bool game(int socket_fd) {
           break;
         }
 
-        if(match(line + 2, "^PLAYER0W1N .+$")) {
+        if(match(line + 2, "^PLAYER1WON .+")) {
           
           if(strcmp(line + 2, "PLAYER1WON Yes") == 0) {
             player1won = true;
@@ -158,13 +159,18 @@ bool game(int socket_fd) {
             printf("| Its a tie                 |\n");
           }
           puts(" ---------------------------");
+          free(line);
           return true;
         }
 
-        if(match(line + 2, "^FIELD ?,?")) {
+        if(match(line + 2, "^FIELD .,.")) {
           sscanf(line + 2, "FIELD %d,%d", &width, &height);
           break;
         } 
+
+        if(match(line + 2, "^ENDFIELD$")) {
+          break;
+        }
 
         recv_board(line + 2);
         break;
