@@ -9,12 +9,27 @@
 char nextCoordinates[2];
 int width = 4;
 int height = 4;
-int board[4][4] = {{4,11,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,4,-1}};
-char cube[4][4][5];
+int board[4][4] = {{4,11,6,3},{2,3,3,3},{4,4,4,4},{5,5,4,5}};
+int cube[4][4][4];
 char test[10][4];
 char test2[2][10][4];
 
+void make_cube_from_board(int height, int width, int board[height][width], int depth, int cube[height][width][depth]) {
 
+  for(int i = 0; i < height; i++) {
+    for(int j = 0; j < width; j++) {
+      int temp = board[i][j];
+      for(int k = depth - 1; k >= 0; k--) {
+        if(temp % 2 == 1) {
+          cube[i][j][k] = 1;
+        } else {
+          cube[i][j][k] = 0;
+        }
+        temp /= 2;
+      }
+    }
+  }
+}
 
 int freeFields[16];
 
@@ -43,100 +58,16 @@ char *intToBinary(int n) {
     return result;
 }
 
-void insertCoordinates(int pos) {
-  char column = (char) (pos / width + 65);
-  char row = (char) (pos % height + 49);
-  nextCoordinates[0] = column;
-  nextCoordinates[1] = row;
-}
-
-int freeFieldsSearch() {
-  int count = 0;
-  for(int i = 0; i < height; i++) {
-    for(int j = 0; j < width; j++) {
-      if(board[i][j] == -1) {
-        freeFields[count] = i*4 + j;
-        count++;
-      }
-    }
-  }
-  return count;
-}
-
-void makeBinaryCube() {
-  for(int i = 0; i < 4; i++) {
-    for(int j = 0; j < 4; j++) {
-      if(board[i][j] != -1) {
-        char *bin = intToBinary(board[i][j]);
-        strcpy(cube[i][j], bin);
-        free(bin);
-      }
-      
-    }
-  } 
-}
-
-// void isWinningMove(int piece, int field, int board[42][4]) {
-// //   int res = piece;
-// //   int column = field % 4;
-// //   int row = field / 4;
 
 
-// //   //vertical line
-// //   for(int i = 0; i < 4; i++) {
-// //     if(i == row) continue;
-// //     if(board[i][column] != -1) res = res & board[i][column];
-// //   }
-
-// //   if(res != 0) {
-// //     return true;
-// //   } else {
-// //     res = piece;
-// //   }
-
-//   //horizontal line
-//   for(int j = 0; j < 4; j++) {
-//     if(j == column) continue;
-
-//     if(board[row][j] != -1) res = res & board[row][j];
-    
-//   }
-
-//   if(res != 0) {
-//     return true;
-//   } else {
-//     res = piece;
-//   }
-
-// //   //diagonal from upper left corner to lower right corner
-// //   for(int i = 0; i < 4; i++){
-// //     for(int j = 0; j < 4; j++){
-// //       if(i + j == 3) {
-// //         if(i == row && j == column) continue;
-
-// //         if(board[i][j] != -1) res = res & board[i][j];
-// //       }
-// //     } 
-// //   }
-
-// //   if(res != 0) {
-// //     return true;
-// //   } else {
-// //     res = piece;
-// //   }
-
-// //   //diagonal line from upper right corner to lower left corner
-// //   //TO DO
-    
-  
-//   return false;
-
-
-// }
 
 int main() {
- int test = 0 & (-1);
- printf("%d", test);
+ make_cube_from_board(4,4,board,4,cube);
+ for(int j = 0; j < 4; j++) {
+   
+   printf("%d", cube[0][0][j]);
+ }
+ puts("");
 
 
   

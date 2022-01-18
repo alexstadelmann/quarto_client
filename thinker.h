@@ -2,6 +2,7 @@ int free_squares[16];
 
 bool is_winning_move(int, int, int height, int width, int[height][width]);
 bool is_winning_move_helper(int, int, int height, int width, int[height][width]);
+int find_winning_move(int, int, int, int board[][width], int, int[]);
 
 int free_squares_search(int height, int width, int [height][width], int[]);
 

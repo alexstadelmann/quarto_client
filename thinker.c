@@ -38,13 +38,17 @@ void calculateMove() {
   
   //stores the resulting array in free_squares and returns the number of free squares
   int square_options = free_squares_search(height, width, board, free_squares);
- 
-  //seed the rand() function
-  srand(time(0));
+  
+  nextSquare = find_winning_move(nextPiece, height, width, board,square_options, free_squares);
+  if(nextSquare == -1) {
 
-  //choose a random square
-  nextSquare = free_squares[rand() % square_options];
-
+    //seed the rand() function
+    srand(time(0));
+    //choose a random square
+    nextSquare = free_squares[rand() % square_options];
+  }
+  
+  
 
   convert_coordinates(height, width, nextSquare, nextCoordinates);
 
@@ -127,26 +131,27 @@ and proceed like before.
 bool is_winning_move(int piece, int square, int height, int width, int board[height][width]) {
   //check for common qualities stored as "1"s
   if(is_winning_move_helper(piece, square, height, width, board)) return true;
-
+  int board_copy[height][width];
+  memcpy(board_copy, board, width*height*sizeof(int));
   //invert binaries to check for common qualities stored as "0"s
   piece ^= 15;
 
   for(int i = 0; i < height; i++) {
     for(int j = 0; j < width; j++){
       
-      if(board[i][j] != -1) {
-        board[i][j] ^= 15;
+      if(board_copy[i][j] != -1) {
+        board_copy[i][j] ^= 15;
       }
     } 
   }
 
   //call helper function with inverted binaries
-  return is_winning_move_helper(piece, square, height, width, board);
+  return is_winning_move_helper(piece, square, height, width, board_copy);
 
 }
 
 //helper function 
-bool is_winning_move_helper(int piece, int square, int height, int width, int board[][4]) {
+bool is_winning_move_helper(int piece, int square, int height, int width, int board[height][width]) {
     int res = piece;
     int column = square % 4;
     int row = square / 4;
@@ -243,5 +248,34 @@ bool is_winning_move_helper(int piece, int square, int height, int width, int bo
   } 
 
   return false;
+
+}
+
+//experimental: make binary cube
+void make_cube_from_board(int height, int width, int board[height][width], int depth, int cube[height][width][depth]) {
+
+  for(int i = 0; i < height; i++) {
+    for(int j = 0; j < width; j++) {
+      int temp = board[i][j];
+      for(int k = depth - 1; k >= 0; k--) {
+        if(temp % 2 == 1) {
+          cube[i][j][k] = 1;
+        } else {
+          cube[i][j][k] = 0;
+        }
+        temp /= 2;
+      }
+    }
+  }
+}
+
+int find_winning_move(int nextPiece, int height, int width, int board[][width], int square_options, int free_squares[]) {
+  for(int i = 0; i < square_options; i++) {
+    if(is_winning_move(nextPiece, free_squares[i], height, width, board)) {
+      puts("find_winning_move found a winning move");
+      return free_squares[i];
+    }
+  } 
+  return -1;
 
 }
