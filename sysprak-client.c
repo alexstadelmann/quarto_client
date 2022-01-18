@@ -154,9 +154,9 @@ void thinker() {
       board[i][j] = shm_board_address[4*i + j + 3];
     } 
   }
-  
-  print_board(height,width, board);
   calculateMove();
+  print_board(height,width, board);
+  freePieces[nextPiece] = -1;
   write(pfds[1], nextMove, 16);
   
 }

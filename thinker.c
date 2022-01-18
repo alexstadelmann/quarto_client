@@ -1,35 +1,30 @@
 #include "header.h"
 #include "thinker.h"
 
-
-int free_pieces_search(int free_pieces[]) {
-  int count = 0;
-  for(int i = 0; i < 15; i++) {
+/*
+The following functions rely on a handful of global variables defined in game.c
+*/
+void free_pieces_search(int freePieces[]) {
+  for(int i = 0; i < 4; i++) {
     for(int j = 0; j < 4; j++) {
-      for(int k = 0; k < 4; k++) {
 
-        if(i == board[j][k]) {
-          free_pieces[count] = -1;
-        }
-        count++;
+      if(board[i][j] != -1) {
+        freePieces[board[i][j]] = -1;
       }
     }
-    
   }
-  return count;
 }
 
 
 void calculateMove() {
-  int square_options = free_squares_search(free_squares);
+
+
   free_pieces_search(freePieces);
-  
+
+  int square_options = free_squares_search(free_squares);
   srand(time(0));
   nextSquare = free_squares[rand() % square_options];
   convert_coordinates(nextSquare, nextCoordinates);
-
-
-  //nextOpponentPiece = free_pieces[rand() % piece_options];
   insertNextMove(nextCoordinates, nextMove);
 
 }
@@ -71,7 +66,6 @@ void insertNextMove(char next_coordinates[], char next_move[]) {
   if(nextOpponentPiece != -1 && !winningMove) {
     sprintf(temp, ",%d\n", nextOpponentPiece);
     strcat(nextMove, temp);
-    freePieces[nextOpponentPiece] = -1;
   } else {
     strcat(nextMove, "\n");
   }
@@ -85,7 +79,6 @@ void chooseNextOpponentPiece() {
   }
   if(cursor <= 15) {
     nextOpponentPiece = cursor;
-    freePieces[nextOpponentPiece] = -1;
   } else {
     nextOpponentPiece = -1;
   }
@@ -101,7 +94,7 @@ Also we have to check qualities stored as "0" in binary.
 For that purpose we invert the binaries(the piece and the board)
 and proceed like before.
 */
-bool is_winning_move(int piece, int Square, int board[42][4]) {
+bool is_winning_move(int piece, int Square, int board[][4]) {
   //check for common qualities stored as "1"s
   if(is_winning_move_helper(piece, Square, board)) return true;
 
@@ -123,7 +116,7 @@ bool is_winning_move(int piece, int Square, int board[42][4]) {
 }
 
 //helper function 
-bool is_winning_move_helper(int piece, int Square, int board[42][4]) {
+bool is_winning_move_helper(int piece, int Square, int board[][4]) {
     int res = piece;
     int column = Square % 4;
     int row = Square / 4;
