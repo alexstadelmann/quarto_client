@@ -229,7 +229,7 @@ bool game(int socket_fd) {
               shm_board_address[4*i + j + 3] = board[i][j];
             }
           }
-          print_board(height, width, board);
+          print_board_binary(height, width, board);
           break;
         }
 

@@ -41,7 +41,8 @@ bool is_valid_file(char *arg, char *string);
 void print_id(char *, int);
 int recv_all(int, char *, size_t);
 void print_board(int, int, int[4][4]);
-char* intToBinary(int);
+void print_board_binary(int height, int width, int[height][width]);
+char* intToBinary(int, int);
 void print_cube();
 
 //Variable for pipe

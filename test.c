@@ -33,40 +33,39 @@ void make_cube_from_board(int height, int width, int board[height][width], int d
 
 int freeFields[16];
 
-char *intToBinary(int n) {
-    int m = n;
-    int counter = 0;
-    while (n != 0) {
-        counter++;
-        n = n / 2;
-    }
+char *intToBinary(int number, int length ) {
+    
+    int cursor = length;
+  
 
-    char * result = (char *) malloc(counter*sizeof(char));
-    result[counter] = '\0';
-    counter--;
-    while (counter >= 0) {
-        if (m % 2 == 0) {
-            *(result + counter) = '0';
+    char * result = (char *) malloc(length*sizeof(char));
+    result[cursor] = '\0';
+    cursor--;
+    while (number > 0) {
+        if (number % 2 == 0) {
+            *(result + cursor) = '0';
         }
         else {
-            *(result + counter) = '1';
+            *(result + cursor) = '1';
         }
-        m = m / 2;
-        counter--;
+        number /= 2;
+        cursor--;
     }
-    result[counter] = '\0';
+    while(cursor >= 0) {
+      result[cursor] = '0';
+      cursor--;
+    }
     return result;
 }
 
 
 
-
 int main() {
- make_cube_from_board(4,4,board,4,cube);
- for(int j = 0; j < 4; j++) {
+ char *temp = intToBinary(77, 8);
    
-   printf("%d", cube[0][0][j]);
- }
+   printf("%shhh", temp);
+   free(temp);
+ 
  puts("");
 
 

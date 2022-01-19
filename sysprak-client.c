@@ -155,7 +155,7 @@ void thinker() {
     } 
   }
   calculateMove();
-  print_board(height,width, board);
+  print_board_binary(height,width, board);
   freePieces[nextPiece] = -1;
   write(pfds[1], nextMove, 16);
   

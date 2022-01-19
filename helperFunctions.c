@@ -96,31 +96,28 @@ void print_board(int height, int width, int board[height][width]) {
   }
   puts("");
 }
+char *intToBinary(int number, int length ) {
+    
+    int cursor = length;
+  
 
-char *intToBinary(int n) {
-    int m = n;
-    int counter = 0;
-    while (n != 0) {
-        counter++;
-        n = n / 2;
-    }
-    //make space for \0 at the end
-    printf("counter size: %d\n", counter);
-
-    char * result = (char *) malloc(counter*sizeof(char));
-    result[counter] = '\0';
-    counter--;
-    while (counter >= 0) {
-        if (m % 2 == 0) {
-            *(result + counter) = '0';
+    char * result = (char *) malloc(length*sizeof(char));
+    result[cursor] = '\0';
+    cursor--;
+    while (number > 0) {
+        if (number % 2 == 0) {
+            *(result + cursor) = '0';
         }
         else {
-            *(result + counter) = '1';
+            *(result + cursor) = '1';
         }
-        m = m / 2;
-        counter--;
+        number /= 2;
+        cursor--;
     }
-    result[counter] = '\0';
+    while(cursor >= 0) {
+      result[cursor] = '0';
+      cursor--;
+    }
     return result;
 }
 
@@ -133,4 +130,35 @@ void print_cube() {
     puts("");
   }
   puts("|");
+}
+
+void print_board_binary(int height, int width, int board[height][width]) {
+  
+  printf("\nNext: %d\n", nextPiece);
+  puts("    A      B     C     D   ");
+  puts("   ------------------------");
+  for(int i = height - 1; i >= 0; i--) {
+    printf("%d |", i + 1);
+    for(int j = 0; j < width; j++) {
+      if(board[i][j] == -1) {
+        printf("  *   ");
+      } else {
+        char *temp = intToBinary(board[i][j], 4);
+        printf("%s  ", temp);
+        free(temp);
+      }
+      
+    }
+    printf("|\n");
+  }
+  puts("   ------------------------");
+  puts("Remainig pieces: ");
+  for(int i = 0; i < 16; i++) {
+    if(freePieces[i] == -1) {
+      printf(" * ");
+    } else {
+      printf("%d ", freePieces[i]);
+    }
+  }
+  puts("");
 }

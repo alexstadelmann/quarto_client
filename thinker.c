@@ -272,7 +272,7 @@ void make_cube_from_board(int height, int width, int board[height][width], int d
 int find_winning_move(int nextPiece, int height, int width, int board[][width], int square_options, int free_squares[]) {
   for(int i = 0; i < square_options; i++) {
     if(is_winning_move(nextPiece, free_squares[i], height, width, board)) {
-      puts("find_winning_move found a winning move");
+      puts("find_winning_move: success");
       return free_squares[i];
     }
   } 
