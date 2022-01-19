@@ -1,71 +1,65 @@
-// #include "config.h"
-// #include "header.h"
+char config_file[100] = {0};
+#include "config.h"
+#include "header.h"
 
-// char* readConfig(char* name, char *config) {
+char portVal[BUFFERLENGTH_PORT];
+  char *paramNameHost = "hostname";
+  char *paramNamePort = "portnumber";
+  char *paramNameGame = "gamekindname";
+  char *string = "";
 
-//     FILE *file = NULL;       
-//     char *stringV = NULL;
-//     const char *delim = "= \n";                                                   
-//     char string[BUFFERLENGTH];  
-//     char *res = calloc(BUFFERLENGTH, sizeof(char)+1);
-//     char *pointer;                                        
+bool readConfig(char *config) {
 
-//     file = fopen(config, "r");                                //open config
+    if (config[0] == '\0') {
+      strcpy(config, "client.conf");
+    }
+                                                        
+    char buffer[BUFFERLENGTH];  
+    
+    char *pointer_one;
+    char *pointer_two;                                        
 
-//     if(file != NULL) {                                        //filter error: couldn't open file
+    FILE *file = fopen(config, "r");                                //open config
+
+    if(file != NULL) {                                        //filter error: couldn't open file
         
-//          while(fgets(string,BUFFERLENGTH,file)) {               //reads a line from the specified stream and stores it into the string pointed to by string
-//             if((strstr(string, name)) != NULL) {               // filter // finds the first occurrence of string in name 
+      while((fgets(buffer,BUFFERLENGTH - 1, file) != NULL)) {
 
-//                 pointer = strtok(string,delim);
+      //   /*
+      //   each line should contain one "="-sign, therefore there
+      //   should be two tokens if we separate at the "="-sign
+      //   */      
+      
+      pointer_one = strtok(buffer,"=");
+         int cursor = 0;
+         while(pointer_one[cursor] != '\0' && pointer_one[cursor] != ' ' ) {
+           cursor++;
+         }
+         pointer_one[cursor] = '\0';
 
-//                 while(pointer != NULL) {
-//                   stringV = pointer;
-//                   pointer = strtok(NULL, delim);
-//                 }
-                
-//                 break;
+        pointer_two = strtok(NULL, "=");
+        cursor = 0;
+        while(pointer_two[cursor] != '\0' && pointer_two[cursor] == ' ') {
+          cursor++;
+        }
+        pointer_two = pointer_two + cursor ;
 
-//             } 
-//         }
-//     } else {                                                                        
-//         perror("Error: Couldn't open file!");
-//         exit(EXIT_FAILURE);
-        
-//    }
+        //save data from file in struct
+        if(strcmp(pointer_one, "hostname") == 0) {
+          
+          
+        }
+      
 
-//   fclose (file);             //close config                                                  
+        printf("%s\n", pointer_one);
+        printf("%s", pointer_two);
+      }
+      puts("");
+    } else {                                                                        
+        perror("Error: Couldn't open file!");
+        exit(EXIT_FAILURE);
+    }
 
-//   memset(res, '\0', sizeof(res)+1);
-//   strcpy(res, stringV);
-//   return res;
-  
-// }
-
-// void createClientConfig(char *confile) {
-
-//   FILE *file = NULL;
-
-//   file = fopen(confile, "r");                                                                               //open file
-
-//   if(file != NULL) {
-
-//     fclose(file);                                                                                           //close file
-
-//   } else {
-
-//     printf("Creating client.conf \n");           
-//     file = fopen(confile, "w");                                                                             //create client.conf
-
-//     if(file == NULL) {                                                                                      //check whether the file can be accessed
-
-//   	   perror("Error");  
-
-//     } else {
-
-//       fprintf(file, "hostname=%s\nportnumber=%i\ngamekindname=%s", HOSTNAME,PORTNUMBER,GAMEKINDNAME);
-//       fclose(file);                                                                                        //close file
-
-//     }
-//   }
-// }
+  fclose(file);
+  return true;
+}

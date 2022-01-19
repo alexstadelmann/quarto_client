@@ -1,5 +1,6 @@
 #include "header.h"
 #include "init.h"
+#include "config.h"
 
 //Variables for command line arguments
 char game_id[ID_LEN + 1];
@@ -25,7 +26,9 @@ bool get_args(int argc, char **argv) {
 
   //read parameters 
   while ((ret = getopt(argc, argv, "g:p:c:")) != -1) {
+
     switch(ret) {
+
       case 'g':
         if(is_valid_id(optarg)) {
           strcpy(game_id, optarg);
@@ -49,127 +52,30 @@ bool get_args(int argc, char **argv) {
             default:
               break;
             }
+            break;
               
           } else {
             perror("player number incorrect");          
             return false;
           }
+          
         
-      // case 'c':
-      //    if(is_valid_file(optarg,string)){
-      //   // if(strcmp(optarg,string) != 0){
-      //       memset(confile, '\0', sizeof(confile));
-      //       strcpy(confile, optarg);
-      //       printf("The confile is %s. \n", confile);
-      //       test = 1;
-      //   } 
-      // break;
+      case 'c':
+         if(optarg[0] != '\0'){
+            strcpy(config_file, optarg);
+            break;
+        } else {
+          perror("empty config file name");
+          return false;
+        }
+      break;
 
       default:
         break;
 
     }
   }
-//   if(test == 0){
-//    const char *conf = "client.conf";
-//     memset(confile, '\0', sizeof(confile));
-//     strcpy(confile, conf);                                                
-//     createClientConfig(confile);
-//     printf("Using \"client.conf\" as confile. \n");
-//  }
 
   return true;
 
 } 
-
-//bool make_config_file() {
-  // //fill struct
-  // char *hostValue = readConfig(paramNameHost, confile);
-  // memset(confiparam.hostName, '\0', sizeof(confiparam.hostName));
-  // strcpy(confiparam.hostName,hostValue);
-  // hostValue = NULL;
-
-  // char *gameKindValue = readConfig(paramNameGame, confile);
-  // memset(confiparam.gameKindName, '\0', sizeof(confiparam.gameKindName));
-  // strcpy(confiparam.gameKindName,gameKindValue);
-  // gameKindValue = NULL;
-
-  // char *portValue = readConfig(paramNamePort, confile);
-  // memset(portVal, '\0', sizeof(portVal));
-  // strcpy(portVal, portValue);
-  // portValue = NULL;
-  // confiparam.portNumber = atoi(portVal);
- 
-
-//}
-
-char* readConfig(char* name, char *config) {
-
-    FILE *file = NULL;       
-    char *stringV = NULL;
-    const char *delim = "= \n";                                                   
-    char string[BUFFERLENGTH];  
-    char *res = calloc(BUFFERLENGTH, sizeof(char)+1);
-    char *pointer;                                        
-
-    file = fopen(config, "r");                                //open config
-
-    if(file != NULL) {                                        //filter error: couldn't open file
-        
-         while(fgets(string,BUFFERLENGTH,file)) {               //reads a line from the specified stream and stores it into the string pointed to by string
-            if((strstr(string, name)) != NULL) {               // filter // finds the first occurrence of string in name 
-
-                pointer = strtok(string,delim);
-
-                while(pointer != NULL) {
-                  stringV = pointer;
-                  pointer = strtok(NULL, delim);
-                }
-                
-                break;
-
-            } 
-        }
-    } else {                                                                        
-        perror("Error: Couldn't open file!");
-        exit(EXIT_FAILURE);
-        
-   }
-
-  fclose (file);             //close config                                                  
-
-  memset(res, '\0', sizeof(res)+1);
-  strcpy(res, stringV);
-  return res;
-  
-}
-
-void createClientConfig(char *confile) {
-
-  FILE *file = NULL;
-
-  file = fopen(confile, "r");                                                                               //open file
-
-  if(file != NULL) {
-
-    fclose(file);                                                                                           //close file
-
-  } else {
-
-    printf("Creating client.conf \n");           
-    file = fopen(confile, "w");                                                                             //create client.conf
-
-    if(file == NULL) {                                                                                      //check whether the file can be accessed
-
-  	   perror("Error");  
-
-    } else {
-
-      fprintf(file, "hostname=%s\nportnumber=%i\ngamekindname=%s", HOSTNAME,PORTNUMBER,GAMEKINDNAME);
-      fclose(file);                                                                                        //close file
-
-    }
-  }
-}
-
-  

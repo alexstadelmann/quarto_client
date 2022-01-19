@@ -3,17 +3,14 @@
 #include "connect.h"
 #include "prolog.h"
 #include "game.h"
+#include "config.h"
 
-  char portVal[BUFFERLENGTH_PORT];
-  char *paramNameHost = "hostname";
-  char *paramNamePort = "portnumber";
-  char *paramNameGame = "gamekindname";
-  char *string = "";
-  char confile [100];
+  
+  
   int test = 0;
   pid_t pid =0;
 
-  configparam confiparam;
+  configparam *config_param;
 
   //Variables for SHM Segments
   int shmID_serverInfo;
@@ -71,10 +68,13 @@ int main(int argc, char **argv)
   if(!get_args(argc, argv)) return 1;
  
     
- //if(!make_config_file()) return 1;
+ //if(!readConfig(config_file)) return 1;
 
   
-
+  /*
+  Create pipe with paratmeter pfds, short for pipe file descriptors. 
+  pfds[0] is the read end and pfds[1] is the write end.
+  */
   pipe(pfds);
 
 
