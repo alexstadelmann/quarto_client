@@ -135,7 +135,7 @@ void print_cube() {
 void print_board_binary(int height, int width, int board[height][width]) {
   
   printf("\nNext: %d\n", nextPiece);
-  puts("    A      B     C     D   ");
+  puts("     A     B     C     D   ");
   puts("   ------------------------");
   for(int i = height - 1; i >= 0; i--) {
     printf("%d |", i + 1);
