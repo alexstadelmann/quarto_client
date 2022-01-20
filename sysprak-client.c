@@ -36,6 +36,9 @@ static void handleExit(void){
   }
   shmID_player = deletingSHM(shmID_player);
   shmID_serverInfo = deletingSHM(shmID_serverInfo);
+  //delete SHM-Segment for board at the end too
+  shmID_board = deletingSHM(shmID_board);
+  
 }
 
 void attachPlayers(int sig){
