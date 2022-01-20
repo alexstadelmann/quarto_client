@@ -91,8 +91,8 @@ char *intToBinary(int number, int length ) {
     
     int cursor = length;
   
-
-    char * result = (char *) malloc(length*sizeof(char));
+    //allocate length many bytes plus one byte for \0
+    char * result = (char *) malloc((length + 1)*sizeof(char));
     result[cursor] = '\0';
     cursor--;
     while (number > 0) {
