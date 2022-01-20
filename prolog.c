@@ -43,6 +43,7 @@ bool prolog(int socket_fd) {
       free(line);
     }
   } while (end != 1);
+  kill(serverinfo->thinker, SIGUSR2);
   free(line);
   return true;
 }  

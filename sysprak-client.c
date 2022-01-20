@@ -88,7 +88,8 @@ int main(int argc, char **argv)
 
     //Aufruf Hilfsfunktion zum Löschen der Segmente
     atexit(handleExit);
-
+    //close writing end of pipe
+    close(pfds[1]);
     //connect to the MNM Server
     int socket_fd;
     if ((socket_fd = connectServer()) == -1){
@@ -113,7 +114,9 @@ int main(int argc, char **argv)
   }else {
     //THINKER(parent process)
     //pid, which is fork()'s return value, is now the child's process-id.
-
+    
+    //close reading end of pipe
+    close(pfds[0]);
     //SHM Segmente im Thinker attachen
     serverinfo = attachingSHM(shmID_serverInfo);
     shmIDplayer = attachingSHM(shmID_player);
@@ -134,7 +137,7 @@ int main(int argc, char **argv)
 }
 
 void thinker() {
-
+  if ( serverinfo->calcFlag == 1){
   //if not connected to the board shared memory, then connect now
   if(shmID_board == -1) {
     shmID_board = serverinfo->shm_identifier;
@@ -158,6 +161,9 @@ void thinker() {
   print_board_binary(height,width, board);
   freePieces[nextPiece] = -1;
   write(pfds[1], nextMove, 16);
+  }
+  //reset flag to initial state
+  serverinfo->calcFlag = 0;
   
 }
   

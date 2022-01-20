@@ -111,6 +111,7 @@ bool game(int socket_fd) {
 
         if(match(line + 2, "^ENDFIELD$")) {
           strcpy(msg, "THINKING\n");
+          serverinfo->calcFlag = 1;
           if(write(socket_fd, msg, strlen(msg)) == -1) {
             perror("sending msg to server");
             return false;

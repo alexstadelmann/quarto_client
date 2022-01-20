@@ -20,6 +20,7 @@ struct serverinfo{
     pid_t connector;
     pid_t thinker;
     int shm_identifier; //not actually a serverinfo but helpful to communicate between processes
+    int calcFlag;       //flag to make sure thinker gets activated properly
 };
 
 struct player{
