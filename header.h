@@ -30,6 +30,7 @@
 #define VERSION_LEN 16
 #define NAME_LEN 64
 
+void save_config_data();
 
 void thinker();
 

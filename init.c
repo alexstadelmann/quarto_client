@@ -10,6 +10,9 @@ char cip_version[VERSION_LEN + 1];
 int player_check = 0; 
 
 //variables for config file
+char *string = "";
+char confile [100];
+int test=0;
 
 
 bool check_argc(int argc) {
@@ -61,20 +64,29 @@ bool get_args(int argc, char **argv) {
           
         
       case 'c':
-         if(optarg[0] != '\0'){
-            strcpy(config_file, optarg);
-            break;
-        } else {
-          perror("empty config file name");
-          return false;
-        }
+         if(is_valid_file(optarg, string)){
+            memset(confile, '\0', sizeof(confile));
+            strcpy(confile, optarg);
+            printf("The confile is %s. \n", confile);
+            test = 1;
+        } 
       break;
+
 
       default:
         break;
 
     }
   }
+  if(test == 0){
+    const char *conf = "client.conf";
+     memset(confile, '\0', sizeof(confile));
+     strcpy(confile, conf);                                                
+     createClientConfig(confile);
+     printf("Using \"client.conf\" as confile. \n");
+  }
+
+
 
   return true;
 

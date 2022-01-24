@@ -5,12 +5,15 @@
 #include "game.h"
 #include "config.h"
 
+  //Variables fpr config file
+  
+
   
   
-  int test = 0;
+  
   pid_t pid =0;
 
-  configparam *config_param;
+  
 
   //Variables for SHM Segments
   int shmID_serverInfo;
@@ -71,7 +74,7 @@ int main(int argc, char **argv)
   if(!get_args(argc, argv)) return 1;
  
     
- //if(!readConfig(config_file)) return 1;
+  save_config_data();
 
   
   /*

@@ -7,20 +7,17 @@
 #include <stdlib.h> 
 #include "header.h" 
 
-
+//define struct
 typedef struct{
-    char hostname[BUFFERLENGTH];
-    int portnumber;
+    char hostName[BUFFERLENGTH];
+    int portNumber;
     char gameKindName[BUFFERLENGTH];
 }configparam;
 
-
-
-//Variables 
-char config_file[100];
-configparam *config_param;
 //define functions
-bool readConfig(char *config);
+char* readConfig(char *name, char *config);
+char* findValueParam(const char *delim, char *string);
 void createClientConfig(char *confile);
+void read_config_data();
 
 #endif

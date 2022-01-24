@@ -1,65 +1,109 @@
-char config_file[100] = {0};
 #include "config.h"
 #include "header.h"
 
 char portVal[BUFFERLENGTH_PORT];
-  char *paramNameHost = "hostname";
-  char *paramNamePort = "portnumber";
-  char *paramNameGame = "gamekindname";
-  char *string = "";
+char *paramNameHost = "hostname";
+char *paramNamePort = "portnumber";
+char *paramNameGame = "gamekindname";
+char confile [100];
 
-bool readConfig(char *config) {
+configparam confiparam;
 
-    if (config[0] == '\0') {
-      strcpy(config, "client.conf");
-    }
-                                                        
-    char buffer[BUFFERLENGTH];  
-    
-    char *pointer_one;
-    char *pointer_two;                                        
+char* readConfig(char* name, char *config) {
 
-    FILE *file = fopen(config, "r");                                //open config
+    FILE *file = NULL;       
+    char *stringV = NULL;
+    const char *delim = "= \n";                                                   
+    char string[BUFFERLENGTH];  
+    char *res = calloc(BUFFERLENGTH, sizeof(char)+1);                                         
+
+    file = fopen(config, "r");                                //open config
 
     if(file != NULL) {                                        //filter error: couldn't open file
         
-      while((fgets(buffer,BUFFERLENGTH - 1, file) != NULL)) {
+         while(fgets(string,BUFFERLENGTH,file)) {               //reads a line from the specified stream and stores it into the string pointed to by string
+            if((strstr(string, name)) != NULL) {               // filter // finds the first occurrence of string in name 
 
-      //   /*
-      //   each line should contain one "="-sign, therefore there
-      //   should be two tokens if we separate at the "="-sign
-      //   */      
-      
-      pointer_one = strtok(buffer,"=");
-         int cursor = 0;
-         while(pointer_one[cursor] != '\0' && pointer_one[cursor] != ' ' ) {
-           cursor++;
-         }
-         pointer_one[cursor] = '\0';
+                stringV = findValueParam(delim, string);   //function returns value of the parameter
+                break;
 
-        pointer_two = strtok(NULL, "=");
-        cursor = 0;
-        while(pointer_two[cursor] != '\0' && pointer_two[cursor] == ' ') {
-          cursor++;
+            } 
         }
-        pointer_two = pointer_two + cursor ;
-
-        //save data from file in struct
-        if(strcmp(pointer_one, "hostname") == 0) {
-          
-          
-        }
-      
-
-        printf("%s\n", pointer_one);
-        printf("%s", pointer_two);
-      }
-      puts("");
     } else {                                                                        
         perror("Error: Couldn't open file!");
         exit(EXIT_FAILURE);
-    }
+        
+   }
 
-  fclose(file);
-  return true;
+  fclose (file);             //close config                                                  
+
+  memset(res, '\0', sizeof(res)+1);
+  strcpy(res, stringV);
+  return res;
+  
+}
+
+
+char* findValueParam(const char *delim, char *string) {  
+
+    char *pointer = NULL;                                                                 
+    char *res = NULL;
+
+    pointer = strtok(string, delim);            //breaks string into a series of tokens using delim
+
+    while(pointer != NULL) {                             //while pointer is not finished
+
+      res = pointer;
+      pointer = strtok(NULL, delim);            //pointer moves one further
+
+    }
+    return res;
+}
+
+
+void createClientConfig(char *confile) {
+
+  FILE *file = NULL;
+
+  file = fopen(confile, "r");                                                                               //open file
+
+  if(file != NULL) {
+
+    fclose(file);                                                                                           //close file
+
+  } else {
+
+    printf("Creating client.conf \n");           
+    file = fopen(confile, "w");                                                                             //create client.conf
+
+    if(file == NULL) {                                                                                      //check whether the file can be accessed
+
+  	   perror("Error");  
+
+    } else {
+
+      fprintf(file, "hostname=%s\nportnumber=%i\ngamekindname=%s", HOSTNAME,PORTNUMBER,GAMEKINDNAME);
+      fclose(file);                                                                                        //close file
+
+    }
+  }
+}
+
+void save_config_data(){
+  char *hostValue = readConfig(paramNameHost, confile);
+   memset(confiparam.hostName, '\0', sizeof(confiparam.hostName));
+   strcpy(confiparam.hostName,hostValue);
+   free(hostValue);
+
+  char *gameKindValue = readConfig(paramNameGame, confile);
+  memset(confiparam.gameKindName, '\0', sizeof(confiparam.gameKindName));
+  strcpy(confiparam.gameKindName,gameKindValue);
+  free(gameKindValue);
+
+  char *portValue = readConfig(paramNamePort, confile);
+  memset(portVal, '\0', sizeof(portVal));
+  strcpy(portVal, portValue);
+  free(portValue);
+  confiparam.portNumber = atoi(portVal);
+
 }
