@@ -5,6 +5,9 @@
 #include "handleResponse.h"
 #include <unistd.h>
 #include "thinker.h"
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 //Variables from the game phase:
 int moveTime;
@@ -23,8 +26,24 @@ int height;
 int width;
 
 
-
 bool game(int socket_fd) {
+
+  //declare variables for select and initialize them
+  int ready_for_reading;
+  fd_set readset;
+  struct timeval tv;
+  FD_ZERO(&readset);
+  FD_SET(pfds[0], &readset);
+  FD_SET(socket_fd, &readset);
+  int fdmax;
+  tv.tv_sec = 0; 
+  tv.tv_usec = 100;
+
+  //we need the largest file descriptor for the select method
+  if(socket_fd > pfds[0]) fdmax = socket_fd;
+  else fdmax = pfds[0];
+  
+
 
   char *line = (char*) malloc(BUFFERLENGTH*sizeof(char));
   char msg[64];
@@ -45,12 +64,10 @@ bool game(int socket_fd) {
     
     if(!skipReading) {
 
-      //receive the next line send by the server
       if(!read_line(socket_fd, line)) {
         perror("reading line");
         return false;
       }
-
 
       //check if message is negative
       if(line[0] == '-') {
@@ -152,16 +169,50 @@ bool game(int socket_fd) {
           break;
         }
         if(match(line + 2, "OKTHINK")) {
-          //print_board(4, board);
 
-          //get response from Thinker. Now its just a test message but later its going to be the nextNove
+          /*
+         the select method pays attention 100 microseconds to the pipe and then 100 microseconds
+         to the server socket and then back to the pipe and so on.
+         */
+          while(true) {
+            
+            ready_for_reading = select(fdmax + 1, &readset, NULL, NULL, &tv);
+            printf("%d", ready_for_reading);
+            //check for errors
+            if(ready_for_reading < -1) {
+              perror("select after sending OKTHINK failed");
+              return false;
+
+            //check if the server send a Timeout message
+            } else if(ready_for_reading > 0 && FD_ISSET(socket_fd, &readset)) {
+              
+              //read what the server send
+              if(!read_line(socket_fd, line)) {
+                perror("reading line");
+                return false;
+              }
+
+              //check if the message is negative
+              if(line[0] == '-') {
+                printf("S: Error! %s\nC: Disconnecting server...\n",line+2);
+                free(line);
+                return false;
+              }
+
+
+            //check if thinker responded through pipe
+            } else if (ready_for_reading > 0 && FD_ISSET(pfds[0], &readset)) {
+              //read the pipes message
+              read(pfds[0], nextMove, 16);
+              printf("message from thinker: %s\n", nextMove);
+              phase = 3;
+              skipReading = true;
+              break;
+
+            } //end of if branch within while loop
+          } //end of while loop
           
-          read(pfds[0], nextMove, 16);
-          printf("message from thinker: %s\n", nextMove);
-          phase = 3;
-          skipReading = true;
-          break;
-        }
+        } //end of OKTHINK if-case
 
         recv_board(line + 2);
         break;
