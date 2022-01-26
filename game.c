@@ -177,7 +177,7 @@ bool game(int socket_fd) {
           while(true) {
             
             ready_for_reading = select(fdmax + 1, &readset, NULL, NULL, &tv);
-            printf("%d", ready_for_reading);
+            
             //check for errors
             if(ready_for_reading < -1) {
               perror("select after sending OKTHINK failed");
