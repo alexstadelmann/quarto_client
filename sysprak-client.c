@@ -82,6 +82,7 @@ int main(int argc, char **argv)
   pfds[0] is the read end and pfds[1] is the write end.
   */
   pipe(pfds);
+  
 
 
  if((pid=fork())<0){

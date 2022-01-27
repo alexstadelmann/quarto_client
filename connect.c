@@ -32,7 +32,9 @@ int connectServer()
 
     //struct sockaddr_in befüllen/erstellen
     server.sin_family = AF_INET;
-    server.sin_port = htons(PORTNUMBER);    
+    server.sin_port = htons(PORTNUMBER);  
+      
+  
 
     //connect-Versuch
     int connectSuccess =  connect(socket_fd, (struct sockaddr*) &server, sizeof(server));

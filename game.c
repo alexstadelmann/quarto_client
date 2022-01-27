@@ -31,17 +31,20 @@ bool game(int socket_fd) {
   //declare variables for select and initialize them
   int ready_for_reading;
   fd_set readset;
+  fd_set readset_copy;
   struct timeval tv;
   FD_ZERO(&readset);
-  FD_SET(pfds[0], &readset);
-  FD_SET(socket_fd, &readset);
+  
+
   int fdmax;
-  tv.tv_sec = 0; 
-  tv.tv_usec = 100;
+  tv.tv_sec = 1; 
+  tv.tv_usec = 0;
 
   //we need the largest file descriptor for the select method
+  
   if(socket_fd > pfds[0]) fdmax = socket_fd;
   else fdmax = pfds[0];
+  
   
 
 
@@ -61,6 +64,10 @@ bool game(int socket_fd) {
   bool skipReading = false; 
 
   while(true) {
+
+    FD_ZERO(&readset_copy);
+    FD_SET(pfds[0], &readset);
+    FD_SET(socket_fd, &readset);
     
     if(!skipReading) {
 
@@ -168,6 +175,8 @@ bool game(int socket_fd) {
           kill(serverinfo->thinker, SIGUSR1);
           break;
         }
+
+
         if(match(line + 2, "OKTHINK")) {
 
           /*
@@ -177,6 +186,7 @@ bool game(int socket_fd) {
           while(true) {
             
             ready_for_reading = select(fdmax + 1, &readset, NULL, NULL, &tv);
+            
             
             //check for errors
             if(ready_for_reading < -1) {
@@ -212,8 +222,11 @@ bool game(int socket_fd) {
             } //end of if branch within while loop
           } //end of while loop
           
-        } //end of OKTHINK if-case
-
+        }
+        //we need this additional break because of the new while loop above
+        if(phase == 3) break;
+         //end of OKTHINK if-case
+        printf("phase: %d, line: %s\n",phase, line + 2);
         recv_board(line + 2);
         break;
 
@@ -312,9 +325,7 @@ bool game(int socket_fd) {
       
       default:
       break;
-    }
-
-    
+    }    
   }
 }
 
