@@ -37,8 +37,8 @@ bool game(int socket_fd) {
   
 
   int fdmax;
-  tv.tv_sec = 1; 
-  tv.tv_usec = 0;
+  tv.tv_sec = 0; 
+  tv.tv_usec = 500000;
 
   //we need the largest file descriptor for the select method
   
@@ -214,7 +214,6 @@ bool game(int socket_fd) {
             } else if (ready_for_reading > 0 && FD_ISSET(pfds[0], &readset)) {
               //read the pipes message
               read(pfds[0], nextMove, 16);
-              printf("message from thinker: %s\n", nextMove);
               phase = 3;
               skipReading = true;
               break;
@@ -222,11 +221,13 @@ bool game(int socket_fd) {
             } //end of if branch within while loop
           } //end of while loop
           
-        }
+        }//end of OKTHINK if-case
+
+
         //we need this additional break because of the new while loop above
         if(phase == 3) break;
-         //end of OKTHINK if-case
-        printf("phase: %d, line: %s\n",phase, line + 2);
+         
+        
         recv_board(line + 2);
         break;
 
